@@ -1,0 +1,31 @@
+# Skrip build Remote PC: menghasilkan biner server & agent untuk amd64 dan 386.
+# Jalankan dari root project:  powershell -ExecutionPolicy Bypass -File build.ps1
+$ErrorActionPreference = "Stop"
+
+$root = Split-Path -Parent $MyInvocation.MyCommand.Path
+Set-Location $root
+New-Item -ItemType Directory -Force -Path bin | Out-Null
+
+$archs = @("amd64", "386")
+# -H=windowsgui: kompilasi sebagai aplikasi GUI-subsystem sehingga Windows TIDAK
+# pernah membuat jendela console (terminal hitam) saat exe dijalankan. Semua
+# umpan balik ke user memakai dialog (MessageBox); log tetap ke file.
+$ldflags = "-s -w -H=windowsgui"
+
+foreach ($arch in $archs) {
+    $env:GOOS = "windows"
+    $env:GOARCH = $arch
+    $env:CGO_ENABLED = "0"
+
+    Write-Host "==> build server ($arch)"
+    go build -ldflags $ldflags -o "bin/server-$arch.exe" ./cmd/server
+    if ($LASTEXITCODE -ne 0) { throw "build server $arch gagal" }
+
+    Write-Host "==> build agent ($arch)"
+    go build -ldflags $ldflags -o "bin/agent-$arch.exe" ./cmd/agent
+    if ($LASTEXITCODE -ne 0) { throw "build agent $arch gagal" }
+}
+
+Write-Host ""
+Write-Host "Selesai. Biner ada di folder bin/:" -ForegroundColor Green
+Get-ChildItem bin | Format-Table Name, Length

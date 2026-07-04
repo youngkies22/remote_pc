@@ -1,0 +1,25 @@
+{"level":"info","ts":"2026-07-02T21:59:09.702+0700","caller":"agent/run.go:39","msg":"agent dimulai","server":"ws://127.0.0.1:7000/ws/agent"}
+{"level":"warn","ts":"2026-07-02T21:59:09.720+0700","caller":"agent/client.go:46","msg":"koneksi berakhir","error":"websocket: bad handshake"}
+{"level":"info","ts":"2026-07-02T21:59:09.721+0700","caller":"agent/client.go:51","msg":"mencoba reconnect","dalam":5}
+{"level":"warn","ts":"2026-07-02T21:59:14.723+0700","caller":"agent/client.go:46","msg":"koneksi berakhir","error":"websocket: bad handshake"}
+{"level":"info","ts":"2026-07-02T21:59:14.723+0700","caller":"agent/client.go:51","msg":"mencoba reconnect","dalam":5}
+{"level":"warn","ts":"2026-07-02T21:59:19.724+0700","caller":"agent/client.go:46","msg":"koneksi berakhir","error":"websocket: bad handshake"}
+{"level":"info","ts":"2026-07-02T21:59:19.731+0700","caller":"agent/client.go:51","msg":"mencoba reconnect","dalam":5}
+{"level":"warn","ts":"2026-07-02T21:59:24.734+0700","caller":"agent/client.go:46","msg":"koneksi berakhir","error":"websocket: bad handshake"}
+{"level":"info","ts":"2026-07-02T21:59:24.735+0700","caller":"agent/client.go:51","msg":"mencoba reconnect","dalam":5}
+{"level":"warn","ts":"2026-07-02T21:59:29.744+0700","caller":"agent/client.go:46","msg":"koneksi berakhir","error":"websocket: bad handshake"}
+{"level":"info","ts":"2026-07-02T21:59:29.744+0700","caller":"agent/client.go:51","msg":"mencoba reconnect","dalam":5}
+{"level":"warn","ts":"2026-07-02T21:59:34.744+0700","caller":"agent/client.go:46","msg":"koneksi berakhir","error":"websocket: bad handshake"}
+{"level":"info","ts":"2026-07-02T21:59:34.744+0700","caller":"agent/client.go:51","msg":"mencoba reconnect","dalam":5}
+{"level":"warn","ts":"2026-07-02T21:59:39.746+0700","caller":"agent/client.go:46","msg":"koneksi berakhir","error":"websocket: bad handshake"}
+{"level":"info","ts":"2026-07-02T21:59:39.746+0700","caller":"agent/client.go:51","msg":"mencoba reconnect","dalam":5}
+{"level":"warn","ts":"2026-07-02T21:59:44.748+0700","caller":"agent/client.go:46","msg":"koneksi berakhir","error":"websocket: bad handshake"}
+{"level":"info","ts":"2026-07-02T21:59:44.748+0700","caller":"agent/client.go:51","msg":"mencoba reconnect","dalam":5}
+{"level":"warn","ts":"2026-07-02T21:59:49.750+0700","caller":"agent/client.go:46","msg":"koneksi berakhir","error":"websocket: bad handshake"}
+{"level":"info","ts":"2026-07-02T21:59:49.750+0700","caller":"agent/client.go:51","msg":"mencoba reconnect","dalam":5}
+{"level":"info","ts":"2026-07-02T22:00:08.131+0700","caller":"agent/run.go:39","msg":"agent dimulai","server":"ws://127.0.0.1:7000/ws/agent"}
+{"level":"info","ts":"2026-07-02T22:00:08.150+0700","caller":"agent/client.go:73","msg":"registrasi berhasil","device_id":"9693446f-32e4-4210-9b25-25e916d06d56"}
+{"level":"info","ts":"2026-07-02T22:16:44.151+0700","caller":"agent/run.go:39","msg":"agent dimulai","server":"ws://127.0.0.1:7000/ws/agent"}
+{"level":"info","ts":"2026-07-02T22:16:44.166+0700","caller":"agent/client.go:73","msg":"registrasi berhasil","device_id":"9693446f-32e4-4210-9b25-25e916d06d56"}
+{"level":"info","ts":"2026-07-02T22:36:55.722+0700","caller":"agent/run.go:39","msg":"agent dimulai","server":"ws://127.0.0.1:7000/ws/agent"}
+{"level":"info","ts":"2026-07-02T22:36:55.738+0700","caller":"agent/client.go:73","msg":"registrasi berhasil","device_id":"9693446f-32e4-4210-9b25-25e916d06d56"}

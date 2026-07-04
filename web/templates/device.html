@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Detail Device — Remote PC</title>
+  <link rel="stylesheet" href="/static/css/app.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="brand"><a href="/">Remote<span>PC</span></a> · <span id="title">Detail</span></div>
+    <div>
+      <span id="status-badge" style="margin-right:0.75rem"></span>
+      <button class="btn" onclick="location.href='/'">← Dashboard</button>
+      <button class="btn" onclick="powerAction('restart')" title="Restart komputer dari jarak jauh">⟳ Restart</button>
+      <button class="btn btn-danger" onclick="powerAction('shutdown')" title="Matikan komputer dari jarak jauh">⏻ Shutdown</button>
+      <button class="btn btn-danger" onclick="removeDevice()">Hapus</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="tabs" id="tabs">
+      <div class="tab active" data-tab="overview">Overview</div>
+      <div class="tab" data-tab="screen">Live Screen</div>
+      <div class="tab" data-tab="files">File Explorer</div>
+      <div class="tab" data-tab="terminal">Terminal</div>
+      <div class="tab" data-tab="processes">Processes</div>
+      <div class="tab" data-tab="services">Services</div>
+      <div class="tab" data-tab="sysinfo">System Info</div>
+    </div>
+
+    <!-- Overview -->
+    <section class="panel" data-panel="overview">
+      <div class="panel-header"><span>Overview</span><span id="ov-updated" class="muted" style="font-size:0.8rem"></span></div>
+      <div id="overview" class="kv"><div class="k">Memuat…</div><div></div></div>
+    </section>
+
+    <!-- Live Screen + Remote Control -->
+    <section class="panel" data-panel="screen" hidden>
+      <div class="panel-header">
+        <span>Live Screen</span>
+        <span>
+          <label class="muted" style="font-size:0.85rem;margin-right:0.75rem">
+            <input type="checkbox" id="screen-control" /> Aktifkan kendali (mouse/keyboard)
+          </label>
+          <select id="screen-quality" class="form-control" style="width:auto;display:inline-block;margin-right:0.5rem">
+            <option value="normal">Kualitas Normal</option>
+            <option value="hd">Kualitas HD</option>
+          </select>
+          <button class="btn" id="screen-fullscreen">⛶ Fullscreen</button>
+          <button class="btn btn-primary" id="screen-connect">Hubungkan</button>
+          <button class="btn" id="screen-disconnect" disabled>Putus</button>
+        </span>
+      </div>
+      <div id="screen-stage" style="position:relative;background:#000;min-height:300px;display:flex;align-items:center;justify-content:center">
+        <img id="screen-img" alt="layar" style="max-width:100%;display:block" />
+        <div id="screen-hint" class="soon" style="position:absolute">Klik "Hubungkan" untuk melihat layar.</div>
+      </div>
+      <input id="screen-keys" style="position:absolute;opacity:0;pointer-events:none" />
+    </section>
+
+    <!-- File Explorer -->
+    <section class="panel" data-panel="files" hidden>
+      <div class="panel-header">
+        <span>File Explorer</span>
+        <span>
+          <button class="btn" id="fx-up">↑ Naik</button>
+          <button class="btn" id="fx-refresh">⟳</button>
+          <button class="btn" id="fx-mkdir">+ Folder</button>
+          <button class="btn" id="fx-upload">⬆ Unggah</button>
+          <input type="file" id="fx-file" hidden />
+        </span>
+      </div>
+      <div style="padding:0.6rem 1.1rem;border-bottom:1px solid var(--border)">
+        <input class="form-control" id="fx-path" placeholder="C:\\ (kosong = daftar drive)" />
+      </div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead><tr><th>Nama</th><th>Ukuran</th><th>Diubah</th><th class="text-end">Aksi</th></tr></thead>
+          <tbody id="fx-rows"><tr><td colspan="4" class="soon">Memuat…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Terminal -->
+    <section class="panel" data-panel="terminal" hidden>
+      <div class="panel-header">
+        <span>Terminal</span>
+        <span>
+          <select id="term-shell" class="form-control" style="width:auto;display:inline-block">
+            <option value="cmd">cmd.exe</option>
+            <option value="powershell">PowerShell</option>
+          </select>
+          <button class="btn btn-primary" id="term-connect">Buka</button>
+          <button class="btn" id="term-disconnect" disabled>Tutup</button>
+        </span>
+      </div>
+      <pre id="term-output" style="margin:0;padding:1rem;height:380px;overflow:auto;background:#0b1120;font-size:0.85rem;white-space:pre-wrap"></pre>
+      <div style="padding:0.6rem 1.1rem;border-top:1px solid var(--border);display:flex;gap:0.5rem">
+        <input class="form-control" id="term-input" placeholder="ketik perintah lalu Enter" disabled />
+      </div>
+    </section>
+
+    <!-- Processes -->
+    <section class="panel" data-panel="processes" hidden>
+      <div class="panel-header"><span>Processes</span><button class="btn" id="proc-refresh">⟳ Muat ulang</button></div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead><tr><th>PID</th><th>Nama</th><th>CPU %</th><th>RAM (MB)</th><th>Status</th><th class="text-end">Aksi</th></tr></thead>
+          <tbody id="proc-rows"><tr><td colspan="6" class="soon">Klik muat ulang.</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Services -->
+    <section class="panel" data-panel="services" hidden>
+      <div class="panel-header"><span>Windows Services</span><button class="btn" id="svc-refresh">⟳ Muat ulang</button></div>
+      <div style="padding:0.5rem 1.1rem"><input class="form-control" id="svc-filter" placeholder="filter nama service…" /></div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead><tr><th>Nama Tampilan</th><th>Nama</th><th>Status</th><th class="text-end">Aksi</th></tr></thead>
+          <tbody id="svc-rows"><tr><td colspan="4" class="soon">Klik muat ulang.</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- System Info -->
+    <section class="panel" data-panel="sysinfo" hidden>
+      <div class="panel-header"><span>System Information</span><button class="btn" id="si-refresh">⟳ Muat</button></div>
+      <div id="sysinfo-body" class="kv"><div class="k soon" style="grid-column:1/3">Klik "Muat" untuk mengambil info sistem.</div></div>
+    </section>
+  </div>
+
+  <script src="/static/js/common.js"></script>
+  <script src="/static/js/device.js"></script>
+  <script src="/static/js/tab-sysinfo.js"></script>
+  <script src="/static/js/tab-files.js"></script>
+  <script src="/static/js/tab-procs.js"></script>
+  <script src="/static/js/tab-services.js"></script>
+  <script src="/static/js/tab-screen.js"></script>
+  <script src="/static/js/tab-terminal.js"></script>
+  <script>DeviceInit();</script>
+</body>
+</html>

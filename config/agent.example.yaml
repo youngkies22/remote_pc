@@ -1,0 +1,23 @@
+# Template konfigurasi agent untuk disebar ke PC siswa.
+# Salin menjadi agent.yaml di samping agent.exe, lalu isi:
+#   - server_host : IP LAN komputer guru (server). Lihat IP yang dicetak server
+#                   saat start (mis. 192.168.1.10).
+#   - server_port : port server (default 7000).
+#
+# device_id & device_token DIBIARKAN KOSONG — server akan mengisinya otomatis
+# saat agent pertama kali registrasi, lalu tersimpan ke file ini.
+
+agent:
+  server_host: "192.168.1.10"   # GANTI dengan IP PC guru (server)
+  server_port: 7000
+  use_tls: false                # true bila server memakai HTTPS/WSS
+  device_id: ""
+  device_token: ""
+  reconnect_seconds: 5
+  heartbeat_seconds: 5
+
+logging:
+  level: "info"
+  max_size_mb: 50
+  max_backups: 5
+  max_age_days: 30

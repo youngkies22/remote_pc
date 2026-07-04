@@ -1,0 +1,26 @@
+[
+  {
+    "id": "9693446f-32e4-4210-9b25-25e916d06d56",
+    "token": "fadb0a3969dcd0817e54f7a58222ff3cdbe844d68e98a52d6528f8c9af148643",
+    "hostname": "MRYES",
+    "username": "MRYES\\MRYES22",
+    "ip": "172.1.0.2",
+    "mac": "00:15:5d:1f:2d:ea",
+    "os": "Windows",
+    "windows_version": "Microsoft Windows 11 Pro 25H2",
+    "arch": "x86_64",
+    "metrics": {
+      "cpu_percent": 7.6,
+      "ram_percent": 59,
+      "ram_total_mb": 24361,
+      "ram_used_mb": 14484,
+      "disk_percent": 84.1,
+      "disk_total_gb": 930,
+      "disk_used_gb": 782,
+      "uptime_sec": 612665
+    },
+    "status": "offline",
+    "first_seen": "2026-07-02T22:00:08.147915+07:00",
+    "last_seen": "2026-07-03T11:16:38.1065227+07:00"
+  }
+]

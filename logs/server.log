@@ -1,0 +1,33 @@
+{"level":"warn","ts":"2026-07-02T21:58:47.993+0700","caller":"server/main.go:57","msg":"user admin default dibuat (admin/admin123) — SEGERA ganti password di produksi"}
+{"level":"info","ts":"2026-07-02T21:58:47.998+0700","caller":"server/http.go:75","msg":"server berjalan","addr":"127.0.0.1:7000","tls":false}
+{"level":"info","ts":"2026-07-02T22:00:04.536+0700","caller":"server/http.go:75","msg":"server berjalan","addr":"127.0.0.1:7000","tls":false}
+{"level":"info","ts":"2026-07-02T22:10:59.768+0700","caller":"server/http.go:75","msg":"server berjalan","addr":"0.0.0.0:7000","tls":false}
+{"level":"info","ts":"2026-07-02T22:10:59.791+0700","caller":"server/netinfo.go:25","msg":"alamat server terdeteksi","dashboard":"http://192.168.224.1:7000","agent_server_url":"ws://192.168.224.1:7000/ws/agent"}
+{"level":"info","ts":"2026-07-02T22:10:59.792+0700","caller":"server/netinfo.go:25","msg":"alamat server terdeteksi","dashboard":"http://192.168.56.2:7000","agent_server_url":"ws://192.168.56.2:7000/ws/agent"}
+{"level":"info","ts":"2026-07-02T22:10:59.792+0700","caller":"server/netinfo.go:25","msg":"alamat server terdeteksi","dashboard":"http://172.1.0.2:7000","agent_server_url":"ws://172.1.0.2:7000/ws/agent"}
+{"level":"info","ts":"2026-07-02T22:10:59.792+0700","caller":"server/netinfo.go:29","msg":"isikan agent_server_url di atas ke config/agent.yaml pada PC siswa, lalu buka Windows Firewall untuk port tersebut"}
+{"level":"info","ts":"2026-07-02T22:16:07.503+0700","caller":"server/http.go:75","msg":"server berjalan","addr":"0.0.0.0:7000","tls":false}
+{"level":"info","ts":"2026-07-02T22:16:07.524+0700","caller":"server/netinfo.go:25","msg":"alamat server terdeteksi","dashboard":"http://192.168.224.1:7000","agent_server_url":"ws://192.168.224.1:7000/ws/agent"}
+{"level":"info","ts":"2026-07-02T22:16:07.524+0700","caller":"server/netinfo.go:25","msg":"alamat server terdeteksi","dashboard":"http://192.168.56.2:7000","agent_server_url":"ws://192.168.56.2:7000/ws/agent"}
+{"level":"info","ts":"2026-07-02T22:16:07.524+0700","caller":"server/netinfo.go:25","msg":"alamat server terdeteksi","dashboard":"http://172.1.0.2:7000","agent_server_url":"ws://172.1.0.2:7000/ws/agent"}
+{"level":"info","ts":"2026-07-02T22:16:07.524+0700","caller":"server/netinfo.go:29","msg":"isikan agent_server_url di atas ke config/agent.yaml pada PC siswa, lalu buka Windows Firewall untuk port tersebut"}
+{"level":"info","ts":"2026-07-02T22:36:52.423+0700","caller":"server/http.go:76","msg":"server berjalan","addr":"0.0.0.0:7000","tls":false}
+{"level":"info","ts":"2026-07-02T22:36:52.445+0700","caller":"server/netinfo.go:25","msg":"alamat server terdeteksi","dashboard":"http://192.168.224.1:7000","agent_server_url":"ws://192.168.224.1:7000/ws/agent"}
+{"level":"info","ts":"2026-07-02T22:36:52.445+0700","caller":"server/netinfo.go:25","msg":"alamat server terdeteksi","dashboard":"http://192.168.56.2:7000","agent_server_url":"ws://192.168.56.2:7000/ws/agent"}
+{"level":"info","ts":"2026-07-02T22:36:52.445+0700","caller":"server/netinfo.go:25","msg":"alamat server terdeteksi","dashboard":"http://172.1.0.2:7000","agent_server_url":"ws://172.1.0.2:7000/ws/agent"}
+{"level":"info","ts":"2026-07-02T22:36:52.445+0700","caller":"server/netinfo.go:29","msg":"isikan agent_server_url di atas ke config/agent.yaml pada PC siswa, lalu buka Windows Firewall untuk port tersebut"}
+{"level":"info","ts":"2026-07-03T10:40:04.947+0700","caller":"server/http.go:76","msg":"server berjalan","addr":"0.0.0.0:7000","tls":false}
+{"level":"info","ts":"2026-07-03T10:40:04.964+0700","caller":"server/netinfo.go:25","msg":"alamat server terdeteksi","dashboard":"http://192.168.224.1:7000","agent_server_url":"ws://192.168.224.1:7000/ws/agent"}
+{"level":"info","ts":"2026-07-03T10:40:04.968+0700","caller":"server/netinfo.go:25","msg":"alamat server terdeteksi","dashboard":"http://192.168.56.2:7000","agent_server_url":"ws://192.168.56.2:7000/ws/agent"}
+{"level":"info","ts":"2026-07-03T10:40:04.968+0700","caller":"server/netinfo.go:25","msg":"alamat server terdeteksi","dashboard":"http://172.1.0.2:7000","agent_server_url":"ws://172.1.0.2:7000/ws/agent"}
+{"level":"info","ts":"2026-07-03T10:40:04.968+0700","caller":"server/netinfo.go:29","msg":"isikan agent_server_url di atas ke config/agent.yaml pada PC siswa, lalu buka Windows Firewall untuk port tersebut"}
+{"level":"info","ts":"2026-07-03T11:15:54.853+0700","caller":"server/http.go:76","msg":"server berjalan","addr":"0.0.0.0:7000","tls":false}
+{"level":"info","ts":"2026-07-03T11:15:54.874+0700","caller":"server/netinfo.go:25","msg":"alamat server terdeteksi","dashboard":"http://192.168.224.1:7000","agent_server_url":"ws://192.168.224.1:7000/ws/agent"}
+{"level":"info","ts":"2026-07-03T11:15:54.874+0700","caller":"server/netinfo.go:25","msg":"alamat server terdeteksi","dashboard":"http://192.168.56.2:7000","agent_server_url":"ws://192.168.56.2:7000/ws/agent"}
+{"level":"info","ts":"2026-07-03T11:15:54.874+0700","caller":"server/netinfo.go:25","msg":"alamat server terdeteksi","dashboard":"http://172.1.0.2:7000","agent_server_url":"ws://172.1.0.2:7000/ws/agent"}
+{"level":"info","ts":"2026-07-03T11:15:54.874+0700","caller":"server/netinfo.go:29","msg":"isikan agent_server_url di atas ke config/agent.yaml pada PC siswa, lalu buka Windows Firewall untuk port tersebut"}
+{"level":"info","ts":"2026-07-03T13:48:47.385+0700","caller":"server/http.go:76","msg":"server berjalan","addr":"0.0.0.0:7000","tls":false}
+{"level":"info","ts":"2026-07-03T13:48:47.405+0700","caller":"server/netinfo.go:25","msg":"alamat server terdeteksi","dashboard":"http://192.168.224.1:7000","agent_server_url":"ws://192.168.224.1:7000/ws/agent"}
+{"level":"info","ts":"2026-07-03T13:48:47.407+0700","caller":"server/netinfo.go:25","msg":"alamat server terdeteksi","dashboard":"http://192.168.56.2:7000","agent_server_url":"ws://192.168.56.2:7000/ws/agent"}
+{"level":"info","ts":"2026-07-03T13:48:47.407+0700","caller":"server/netinfo.go:25","msg":"alamat server terdeteksi","dashboard":"http://172.1.0.2:7000","agent_server_url":"ws://172.1.0.2:7000/ws/agent"}
+{"level":"info","ts":"2026-07-03T13:48:47.407+0700","caller":"server/netinfo.go:29","msg":"isikan agent_server_url di atas ke config/agent.yaml pada PC siswa, lalu buka Windows Firewall untuk port tersebut"}

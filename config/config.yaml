@@ -1,0 +1,34 @@
+# Konfigurasi Server Remote PC
+# Semua nilai memiliki default di internal/config; file ini menimpanya bila ada.
+
+server:
+  # 0.0.0.0 = server mendengar di semua interface agar PC siswa di LAN bisa
+  # terhubung. Untuk uji di satu PC saja, ganti ke 127.0.0.1.
+  host: "0.0.0.0"
+  port: 7000               # port default sesuai spesifikasi (buka di Windows Firewall)
+  tls:
+    enabled: false         # aktifkan bila cert_file & key_file tersedia (HTTPS/WSS)
+    cert_file: ""
+    key_file: ""
+
+auth:
+  # WAJIB diganti di produksi. Dipakai untuk menandatangani token JWT operator.
+  jwt_secret: "ubah-secret-ini-di-produksi"
+  jwt_expiry_hours: 24
+
+storage:
+  data_dir: "data"                 # devices.json, users.json, dst.
+  logs_dir: "logs"                 # server.log, client.log, error.log, websocket.log
+  screenshots_dir: "screenshots"
+  uploads_dir: "uploads"
+  downloads_dir: "downloads"
+
+heartbeat:
+  interval_seconds: 5              # ekspektasi interval heartbeat agent
+  offline_after_seconds: 15        # device dianggap offline bila melewati ambang ini
+
+logging:
+  level: "info"                    # debug | info | warn | error
+  max_size_mb: 50                  # rotasi per file (lumberjack)
+  max_backups: 5
+  max_age_days: 30

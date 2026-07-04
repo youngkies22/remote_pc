@@ -1,0 +1,19 @@
+{"level":"warn","ts":"2026-07-02T21:59:09.720+0700","caller":"ws/handler.go:47","msg":"gagal upgrade websocket","error":"websocket: response does not implement http.Hijacker"}
+{"level":"warn","ts":"2026-07-02T21:59:14.722+0700","caller":"ws/handler.go:47","msg":"gagal upgrade websocket","error":"websocket: response does not implement http.Hijacker"}
+{"level":"warn","ts":"2026-07-02T21:59:19.724+0700","caller":"ws/handler.go:47","msg":"gagal upgrade websocket","error":"websocket: response does not implement http.Hijacker"}
+{"level":"warn","ts":"2026-07-02T21:59:24.734+0700","caller":"ws/handler.go:47","msg":"gagal upgrade websocket","error":"websocket: response does not implement http.Hijacker"}
+{"level":"warn","ts":"2026-07-02T21:59:29.736+0700","caller":"ws/handler.go:47","msg":"gagal upgrade websocket","error":"websocket: response does not implement http.Hijacker"}
+{"level":"warn","ts":"2026-07-02T21:59:34.744+0700","caller":"ws/handler.go:47","msg":"gagal upgrade websocket","error":"websocket: response does not implement http.Hijacker"}
+{"level":"warn","ts":"2026-07-02T21:59:39.746+0700","caller":"ws/handler.go:47","msg":"gagal upgrade websocket","error":"websocket: response does not implement http.Hijacker"}
+{"level":"warn","ts":"2026-07-02T21:59:44.748+0700","caller":"ws/handler.go:47","msg":"gagal upgrade websocket","error":"websocket: response does not implement http.Hijacker"}
+{"level":"warn","ts":"2026-07-02T21:59:49.749+0700","caller":"ws/handler.go:47","msg":"gagal upgrade websocket","error":"websocket: response does not implement http.Hijacker"}
+{"level":"info","ts":"2026-07-02T22:00:08.149+0700","caller":"ws/handler.go:60","msg":"agent terhubung","device_id":"9693446f-32e4-4210-9b25-25e916d06d56","hostname":"MRYES"}
+{"level":"info","ts":"2026-07-02T22:00:46.264+0700","caller":"ws/handler.go:67","msg":"agent terputus","device_id":"9693446f-32e4-4210-9b25-25e916d06d56"}
+{"level":"info","ts":"2026-07-02T22:16:31.218+0700","caller":"ws/handler.go:60","msg":"agent terhubung","device_id":"cb5a8173-284b-4f1d-a232-7aba3caab8f5","hostname":"MRYES"}
+{"level":"info","ts":"2026-07-02T22:16:44.166+0700","caller":"ws/handler.go:60","msg":"agent terhubung","device_id":"9693446f-32e4-4210-9b25-25e916d06d56","hostname":"MRYES"}
+{"level":"info","ts":"2026-07-02T22:17:05.711+0700","caller":"ws/handler.go:67","msg":"agent terputus","device_id":"9693446f-32e4-4210-9b25-25e916d06d56"}
+{"level":"info","ts":"2026-07-02T22:17:05.714+0700","caller":"ws/handler.go:67","msg":"agent terputus","device_id":"cb5a8173-284b-4f1d-a232-7aba3caab8f5"}
+{"level":"info","ts":"2026-07-02T22:36:55.738+0700","caller":"ws/handler.go:60","msg":"agent terhubung","device_id":"9693446f-32e4-4210-9b25-25e916d06d56","hostname":"MRYES"}
+{"level":"info","ts":"2026-07-02T22:39:13.871+0700","caller":"ws/handler.go:67","msg":"agent terputus","device_id":"9693446f-32e4-4210-9b25-25e916d06d56"}
+{"level":"info","ts":"2026-07-03T11:15:58.105+0700","caller":"ws/handler.go:60","msg":"agent terhubung","device_id":"9693446f-32e4-4210-9b25-25e916d06d56","hostname":"MRYES"}
+{"level":"info","ts":"2026-07-03T11:16:42.482+0700","caller":"ws/handler.go:67","msg":"agent terputus","device_id":"9693446f-32e4-4210-9b25-25e916d06d56"}

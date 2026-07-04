@@ -1,0 +1,10 @@
+[
+  {
+    "id": "16a2056f-d6fe-4266-afcc-30df7c79b7bf",
+    "username": "admin",
+    "password_hash": "$2a$10$a8qJHNseVqFJkmBVBXdyw.TEay5Dk.SbhIWCCy2PCRnCaO1eMwjAm",
+    "role": "admin",
+    "created_at": "2026-07-02T21:58:47.9901691+07:00",
+    "last_login": "2026-07-03T13:49:01.4887601+07:00"
+  }
+]
