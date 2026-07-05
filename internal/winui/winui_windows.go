@@ -1,3 +1,5 @@
+//go:build windows
+
 // Package winui menyediakan interaksi UI Windows minimal untuk aplikasi yang
 // dikompilasi sebagai GUI-subsystem (tanpa jendela console): menampilkan dialog
 // pesan, memeriksa hak administrator, dan menjalankan ulang diri sendiri dengan

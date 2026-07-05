@@ -1,0 +1,10 @@
+.git
+bin
+docker/bin
+data
+logs
+screenshots
+uploads
+downloads
+config.yaml
+config/config.yaml

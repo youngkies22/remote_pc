@@ -112,6 +112,20 @@ minta izin Administrator (popup UAC) dan berjalan **senyap tanpa jendela hitam**
 > `agent.yaml` + `install-agent.vbs`) ke semua PC siswa. Tiap PC cuma perlu
 > **1× dobel-klik + 1× klik Yes** — tak perlu edit config satu per satu.
 
+### 3) Alternatif: server di Linux (Docker / Proxmox)
+
+Server (dashboard) juga bisa dijalankan di Linux — mis. VM atau LXC container
+di Proxmox — lewat Docker, jadi tidak perlu PC Windows khusus untuk server.
+**Agent tetap wajib di PC Windows siswa** (butuh WMI, screen capture, kontrol
+service Windows); hanya bagian server yang bisa dipindah ke Linux.
+
+```sh
+docker compose -f docker/docker-compose.yml up -d --build
+```
+
+Detail lengkap (lokasi volume data, build binary Linux tanpa Docker, buka
+port firewall di host Linux) ada di [`docker/README.md`](docker/README.md).
+
 ---
 
 ## Cara memakai (di dashboard guru)
@@ -231,8 +245,9 @@ internal/server            http, routes, REST API, WebSocket hub + broker
 internal/agent             client, heartbeat, sysinfo, screen, input, terminal, dll
 internal/autostart         Scheduled Task (auto-start) via schtasks
 internal/wol               Wake-on-LAN (magic packet)
-internal/winui             dialog Windows (MessageBox) + elevasi UAC
+internal/winui             dialog Windows (MessageBox) + elevasi UAC (stub di Linux)
 web/                       frontend (HTML + CSS + Vanilla JS), di-embed
+docker/                    Dockerfile, docker-compose, build binary Linux (server saja — lihat docker/README.md)
 ```
 
 **Arsitektur singkat:** server memegang WebSocket `Hub` (RPC ber-UUID) + `Broker`
