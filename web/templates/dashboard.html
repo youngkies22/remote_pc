@@ -9,8 +9,8 @@
 <body>
   <nav class="navbar">
     <div class="brand">Remote<span>PC</span> · Dashboard</div>
-    <div>
-      <span id="whoami" class="muted" style="margin-right:1rem"></span>
+    <div class="actions">
+      <span id="whoami" class="muted"></span>
       <button class="btn" onclick="logout()">Keluar</button>
     </div>
   </nav>
@@ -27,7 +27,7 @@
         <span>Perangkat</span>
         <span class="muted" id="refresh-note" style="font-size:0.8rem">memuat…</span>
       </div>
-      <div style="overflow-x:auto">
+      <div class="table-scroll">
         <table>
           <thead>
             <tr>

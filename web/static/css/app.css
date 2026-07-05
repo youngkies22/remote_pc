@@ -25,14 +25,21 @@ a { color: var(--accent); text-decoration: none; }
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
   padding: 0.75rem 1.25rem;
   background: var(--panel);
   border-bottom: 1px solid var(--border);
 }
+
+.actions { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+.form-control-inline { width: auto; display: inline-block; }
+.table-scroll { overflow-x: auto; }
+.kv-full { grid-column: 1 / -1; }
 .navbar .brand { font-weight: 700; font-size: 1.1rem; }
 .navbar .brand span { color: var(--accent); }
 
-.container { max-width: 1200px; margin: 0 auto; padding: 1.25rem; }
+.container { max-width: min(1440px, 96vw); margin: 0 auto; padding: 1.25rem; }
 
 .btn {
   display: inline-block;
@@ -57,7 +64,7 @@ a { color: var(--accent); text-decoration: none; }
 .card .value.offline { color: var(--offline); }
 
 .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
-.panel-header { padding: 0.85rem 1.1rem; border-bottom: 1px solid var(--border); font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
+.panel-header { padding: 0.85rem 1.1rem; border-bottom: 1px solid var(--border); font-weight: 600; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem 0.75rem; }
 
 table { width: 100%; border-collapse: collapse; }
 th, td { text-align: left; padding: 0.7rem 1.1rem; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
@@ -73,7 +80,7 @@ tbody tr:hover { background: var(--panel-2); }
 .meter > span { display: block; height: 100%; background: var(--accent); }
 
 .login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-.login-card { width: 340px; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; }
+.login-card { width: min(340px, 92vw); background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; }
 .login-card h1 { margin: 0 0 0.25rem; font-size: 1.4rem; }
 .login-card p { margin: 0 0 1.5rem; color: var(--muted); font-size: 0.85rem; }
 .form-group { margin-bottom: 1rem; }
@@ -87,6 +94,9 @@ tbody tr:hover { background: var(--panel-2); }
 .tab { padding: 0.55rem 1rem; border: 1px solid transparent; border-bottom: none; border-radius: 8px 8px 0 0; color: var(--muted); cursor: pointer; }
 .tab.active { background: var(--panel); border-color: var(--border); color: var(--text); }
 .tab.disabled { opacity: 0.5; cursor: not-allowed; }
+
+#screen-stage { min-height: clamp(220px, 60vh, 640px); }
+#term-output { height: clamp(240px, 50vh, 560px); }
 
 #screen-stage:fullscreen,
 #screen-stage:-webkit-full-screen {
@@ -108,3 +118,24 @@ tbody tr:hover { background: var(--panel-2); }
 .text-end { text-align: right; }
 .mt { margin-top: 1.25rem; }
 .soon { padding: 2rem; text-align: center; color: var(--muted); }
+
+@media (max-width: 900px) {
+  .container { padding: 1rem; }
+  .kv { grid-template-columns: 150px 1fr; }
+}
+
+@media (max-width: 600px) {
+  .container { padding: 0.75rem; }
+  .kv { grid-template-columns: 1fr; gap: 0.15rem 0; padding: 0.9rem; }
+  .kv .k { padding-top: 0.55rem; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.03em; }
+  .kv .k:first-child { padding-top: 0; }
+
+  .tab { padding: 0.5rem 0.7rem; font-size: 0.85rem; }
+
+  th, td { padding: 0.5rem 0.65rem; font-size: 0.8rem; }
+  th { font-size: 0.62rem; }
+}
+
+@media (max-width: 420px) {
+  .login-card { padding: 1.5rem 1.25rem; }
+}
