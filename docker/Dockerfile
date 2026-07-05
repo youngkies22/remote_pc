@@ -15,11 +15,15 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
     go build -ldflags "-s -w" -o /out/server ./cmd/server
 
 FROM alpine:3.20
-RUN adduser -D -u 1000 remotepc
+RUN apk add --no-cache su-exec && adduser -D -u 1000 remotepc
 WORKDIR /app
 COPY --from=build /out/server /app/server
-RUN mkdir -p /app/config /app/data /app/logs /app/screenshots /app/uploads /app/downloads \
+COPY docker/entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh \
+    && mkdir -p /app/config /app/data /app/logs /app/screenshots /app/uploads /app/downloads \
     && chown -R remotepc:remotepc /app
-USER remotepc
 EXPOSE 7000
-ENTRYPOINT ["/app/server", "-config", "/app/config/config.yaml"]
+# Container start sebagai root agar entrypoint bisa membetulkan kepemilikan
+# folder yang di-bind-mount dari host, lalu turun ke user "remotepc" sendiri
+# sebelum menjalankan server (lihat entrypoint.sh).
+ENTRYPOINT ["/app/entrypoint.sh"]
