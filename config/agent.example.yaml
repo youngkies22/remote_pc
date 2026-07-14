@@ -1,14 +1,16 @@
 # Template konfigurasi agent untuk disebar ke PC siswa.
-# Salin menjadi agent.yaml di samping agent.exe, lalu isi:
-#   - server_host : IP LAN komputer guru (server). Lihat IP yang dicetak server
-#                   saat start (mis. 192.168.1.10).
-#   - server_port : port server (default 7000).
+# Salin menjadi agent.yaml di samping agent.exe.
+#
+# server_host: "auto" (default) => agent MENEMUKAN server otomatis di LAN lewat
+#   UDP broadcast. Cukup install, tidak perlu tahu IP/port server sama sekali.
+#   Isi dengan IP server HANYA bila server & PC siswa berada di subnet/jaringan
+#   berbeda sehingga broadcast tidak menjangkau (mis. "192.168.1.10").
 #
 # device_id & device_token DIBIARKAN KOSONG — server akan mengisinya otomatis
 # saat agent pertama kali registrasi, lalu tersimpan ke file ini.
 
 agent:
-  server_host: "192.168.1.10"   # GANTI dengan IP PC guru (server)
+  server_host: "auto"           # "auto" = temukan server sendiri di jaringan
   server_port: 7000
   use_tls: false                # true bila server memakai HTTPS/WSS
   device_id: ""

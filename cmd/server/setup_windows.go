@@ -96,19 +96,23 @@ func disableAutostart() {
 	winui.MessageBox(appName, "Auto-start server dinonaktifkan & port firewall ditutup.", false)
 }
 
-// addFirewallRule membuka port TCP inbound di semua profil Windows Firewall.
-// Butuh hak Administrator; wajar gagal bila dijalankan tanpa elevasi.
+// addFirewallRule membuka port inbound di semua profil Windows Firewall: TCP
+// untuk WebSocket/HTTP dan UDP untuk auto-discovery (keduanya dengan nama rule
+// sama agar sekali hapus membersihkan keduanya). Butuh hak Administrator; wajar
+// gagal bila dijalankan tanpa elevasi.
 func addFirewallRule(port int) error {
-	cmd := exec.Command("netsh", "advfirewall", "firewall", "add", "rule",
-		"name="+firewallRuleName,
-		"dir=in",
-		"action=allow",
-		"protocol=TCP",
-		fmt.Sprintf("localport=%d", port),
-	)
-	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true, CreationFlags: createNoWindow}
-	if out, err := cmd.CombinedOutput(); err != nil {
-		return fmt.Errorf("netsh gagal: %v: %s", err, string(out))
+	for _, proto := range []string{"TCP", "UDP"} {
+		cmd := exec.Command("netsh", "advfirewall", "firewall", "add", "rule",
+			"name="+firewallRuleName,
+			"dir=in",
+			"action=allow",
+			"protocol="+proto,
+			fmt.Sprintf("localport=%d", port),
+		)
+		cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true, CreationFlags: createNoWindow}
+		if out, err := cmd.CombinedOutput(); err != nil {
+			return fmt.Errorf("netsh gagal (%s): %v: %s", proto, err, string(out))
+		}
 	}
 	return nil
 }

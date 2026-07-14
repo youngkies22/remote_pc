@@ -62,6 +62,9 @@ const (
 	// --- Power control (server -> agent, fire-and-forget) ---
 	TypePowerShutdown MessageType = "power.shutdown" // matikan komputer
 	TypePowerRestart  MessageType = "power.restart"  // restart komputer
+
+	// --- Pesan ke client (server -> agent, fire-and-forget) ---
+	TypeMessage MessageType = "message" // tampilkan dialog pesan di layar siswa
 )
 
 // Envelope adalah amplop standar untuk semua pesan WebSocket.

@@ -17,7 +17,11 @@ menginstal apa pun tambahan.
 
 ## Apa saja yang bisa dilakukan
 
-- 🖥️ **Dashboard** — daftar semua PC siswa, status online/offline realtime.
+- 🖥️ **Dashboard** — daftar semua PC siswa, status online/offline realtime,
+  **dikelompokkan otomatis per subnet IP** agar rapi walau PC-nya banyak.
+- 🔌 **Auto-discovery** — agent **cukup di-install, langsung menemukan server
+  sendiri** di LAN. Tidak perlu mengetik IP/port server (masih bisa diarahkan
+  manual bila mau).
 - 📊 **System Info** — serial, motherboard, BIOS, CPU, RAM, GPU, adapter jaringan (WMI).
 - 📸 **Screenshot** & 🎥 **Live Screen** — lihat layar PC siswa secara langsung
   (bisa fullscreen, kualitas normal/HD).
@@ -26,7 +30,10 @@ menginstal apa pun tambahan.
 - 💻 **Terminal** — jalankan `cmd`/PowerShell dari jarak jauh.
 - ⚙️ **Process Manager** — daftar proses + hentikan proses.
 - 🔧 **Service Manager** — daftar layanan Windows + Start/Stop/Restart.
-- ⏻ **Shutdown / Restart** jarak jauh, dan ⚡ **Wake-on-LAN** (menyalakan PC yang mati).
+- 💬 **Kirim pesan** — tampilkan dialog pesan di layar PC siswa (satu PC, satu
+  grup, atau semua sekaligus).
+- ⏻ **Shutdown / Restart** jarak jauh — per-PC, **per-grup subnet, atau semua PC
+  sekaligus** — dan ⚡ **Wake-on-LAN** (menyalakan PC yang mati).
 
 ---
 
@@ -77,40 +84,58 @@ minta izin Administrator (popup UAC) dan berjalan **senyap tanpa jendela hitam**
 > lalu berhenti sambil menampilkan dialog. **Dobel-klik `install-server.vbs`
 > sekali lagi** untuk benar-benar mengaktifkan auto-start.
 
-### 2) PC siswa (agent)
+### 2) PC siswa (agent) — cukup install, tanpa setting IP
+
+Berkat **auto-discovery**, agent menemukan server sendiri di LAN. **Tidak perlu
+membuat `agent.yaml` atau mengetik IP server sama sekali.**
 
 1. Buat folder, mis. `C:\RemotePC\`.
 2. Salin ke folder itu: **`agent-amd64.exe`** dan **`install-agent.vbs`**.
 3. **Ganti nama** `agent-amd64.exe` → **`agent.exe`**.
-4. Buat file **`agent.yaml`** di folder yang sama, isi IP PC guru:
+4. **Dobel-klik `install-agent.vbs`** → klik **"Yes"**.
 
-   ```yaml
-   agent:
-     server_host: "192.168.1.10"   # GANTI dengan IP PC guru (server)
-     server_port: 7000
-     use_tls: false
-     device_id: ""                 # dibiarkan kosong — diisi server otomatis
-     device_token: ""              # dibiarkan kosong — diisi server otomatis
-     reconnect_seconds: 5
-     heartbeat_seconds: 5
+   Selesai. Agent membuat config default (`server_host: "auto"`), berjalan
+   tersembunyi, **otomatis aktif setiap siswa login**, dan langsung mencari
+   server di jaringan. Dalam beberapa detik PC ini muncul di dashboard guru.
 
-   logging:
-     level: "info"
-     max_size_mb: 50
-     max_backups: 5
-     max_age_days: 30
-   ```
+> **Deploy ke banyak PC siswa sekaligus:** salin **dua file yang sama**
+> (`agent.exe` + `install-agent.vbs`) ke semua PC siswa. Tiap PC cuma perlu
+> **1× dobel-klik + 1× klik Yes** — tanpa config apa pun.
 
-   *(Template lengkap ada di `config/agent.example.yaml`.)*
-5. **Dobel-klik `install-agent.vbs`** → klik **"Yes"**.
+**Cara kerja auto-discovery:** agent menyiarkan pertanyaan "di mana server?" ke
+LAN (UDP broadcast), server menjawab dengan alamatnya, lalu agent menyambung.
+Alamat IP server dikenali otomatis dari balasan. Kalau server pindah IP atau
+belum menyala, agent otomatis mencari ulang.
 
-   Selesai. Agent kini berjalan tersembunyi dan **otomatis aktif setiap siswa
-   login**. Dalam beberapa detik PC ini muncul di dashboard guru.
+> ⚠️ **Batasan:** auto-discovery hanya menjangkau **satu segmen LAN (subnet)
+> yang sama**. Kalau PC siswa & PC guru dipisah router ke subnet berbeda,
+> broadcast tidak menyeberang — untuk kasus itu arahkan agent secara manual
+> (lihat di bawah).
 
-> **Deploy ke banyak PC siswa sekaligus:** siapkan **satu** `agent.yaml` berisi
-> IP server yang benar, lalu salin **tiga file yang sama** (`agent.exe` +
-> `agent.yaml` + `install-agent.vbs`) ke semua PC siswa. Tiap PC cuma perlu
-> **1× dobel-klik + 1× klik Yes** — tak perlu edit config satu per satu.
+**Mengarahkan agent ke IP server tertentu (opsional):** buat file **`agent.yaml`**
+di samping `agent.exe` dan ganti `server_host` dari `"auto"` ke IP server:
+
+```yaml
+agent:
+  server_host: "192.168.1.10"   # "auto" = cari sendiri; isi IP untuk paksa ke server tertentu
+  server_port: 7000
+  use_tls: false
+  device_id: ""                 # dibiarkan kosong — diisi server otomatis
+  device_token: ""              # dibiarkan kosong — diisi server otomatis
+  reconnect_seconds: 5
+  heartbeat_seconds: 5
+
+logging:
+  level: "info"
+  max_size_mb: 50
+  max_backups: 5
+  max_age_days: 30
+```
+
+*(Template lengkap ada di `config/agent.example.yaml`.)* Setelah mengubah
+`agent.yaml`, **restart agent** agar config baru terbaca (restart PC, atau
+End task `agent.exe` di Task Manager lalu jalankan lagi). Pindah ke server lain
+aman: server baru akan mendaftarkan PC ini sebagai device baru secara otomatis.
 
 ### 3) Alternatif: server di Linux (Docker / Proxmox)
 
@@ -134,12 +159,18 @@ port firewall di host Linux) ada di [`docker/README.md`](docker/README.md).
 2. Login dengan akun default:
    - Username: **`admin`**
    - Password: **`admin123`** — **segera ganti untuk keamanan.**
-3. Klik salah satu PC siswa di dashboard untuk membuka **halaman detail**, lalu
-   pilih tab sesuai kebutuhan:
+3. Di **dashboard**, PC siswa otomatis **dikelompokkan per subnet IP** (mis.
+   `192.168.1.0/24`) agar rapi. Tersedia aksi massal tanpa membuka detail:
+   - **Header panel** — 💬 **Pesan Semua**, ⟳ **Restart Semua**, ⏻ **Shutdown
+     Semua** (berlaku ke seluruh PC online).
+   - **Tiap grup subnet** — tombol pesan/restart/shutdown khusus grup itu.
+   - **Tiap baris PC** — 💬 kirim pesan, ⏻ shutdown, atau ⚡ Wake (bila offline).
+4. Klik salah satu PC siswa untuk membuka **halaman detail**, lalu pilih tab
+   sesuai kebutuhan:
 
 | Tab | Fungsi | Catatan |
 |-----|--------|---------|
-| **Overview** | metrik & identitas realtime | tombol ⏻ Shutdown / ⟳ Restart di kanan atas |
+| **Overview** | metrik & identitas realtime | tombol 💬 Pesan / ⟳ Restart / ⏻ Shutdown di kanan atas |
 | **Live Screen** | lihat layar; centang **"Aktifkan kendali"** untuk remote mouse/keyboard; tombol fullscreen & pilihan kualitas normal/HD | agent harus di sesi desktop |
 | **File Explorer** | jelajah, unduh, unggah, rename, hapus, buat folder | maks **40 MB** per transfer |
 | **Terminal** | jalankan cmd/PowerShell realtime | — |
@@ -150,7 +181,11 @@ port firewall di host Linux) ada di [`docker/README.md`](docker/README.md).
 ### Menyalakan / mematikan PC dari jarak jauh
 
 - **Shutdown / Restart** — tombol **⏻** dan **⟳** di kanan atas halaman detail
-  (device harus online). Ada konfirmasi sebelum dieksekusi.
+  (device harus online). Ada konfirmasi sebelum dieksekusi. Untuk banyak PC
+  sekaligus, pakai tombol **Shutdown Semua / Restart Semua** di header dashboard,
+  atau tombol per-grup subnet.
+- **Kirim pesan** — tombol **💬** menampilkan dialog pesan di layar PC siswa.
+  Bisa ke satu PC (dashboard/detail), satu grup subnet, atau semua PC online.
 - **Wake-on-LAN** — tombol **⚡ Wake** di dashboard, muncul pada PC yang offline &
   punya MAC tersimpan. **Prasyarat hardware:** WOL harus diaktifkan dulu di
   **BIOS/UEFI** dan **Power Management** kartu jaringan tiap PC target (disetel
@@ -191,7 +226,13 @@ menghentikan proses yang sedang jalan, gunakan **Task Manager**. Menghapus total
 - Butuh **Administrator (UAC)** saat install karena mendaftarkan auto-start &
   membuka firewall adalah perubahan sistem Windows — bukan keterbatasan program.
 - Jaringan: server bind `0.0.0.0:7000`. Pastikan PC guru & siswa **di LAN yang
-  sama** dan port **7000** tidak diblokir router.
+  sama** dan port **7000** tidak diblokir router. Auto-discovery memakai port
+  **UDP 7000** (WebSocket memakai **TCP 7000**); installer server membuka
+  keduanya di firewall otomatis.
+- **Kalau server sudah pernah di-install sebelum fitur auto-discovery ada,**
+  jalankan **`server.exe enable` sekali lagi** (atau dobel-klik
+  `install-server.vbs`) agar port **UDP** 7000 ikut dibuka di firewall — tanpa
+  itu, siaran pencarian dari agent akan terblokir.
 
 ---
 
@@ -201,8 +242,8 @@ Kalau tidak mau memasang auto-start, cukup **dobel-klik** exe-nya:
 
 - `server.exe` di PC guru — first-run membuat `config.yaml` lalu berhenti; jalankan
   lagi untuk mulai melayani.
-- `agent.exe` di PC siswa — first-run membuat `agent.yaml` lalu berhenti; isi IP
-  server, jalankan lagi untuk menyambung.
+- `agent.exe` di PC siswa — first-run membuat `agent.yaml` (default `server_host:
+  "auto"`) lalu **langsung jalan** mencari server di LAN; tidak perlu mengisi IP.
 
 Config dicari **di samping exe** (bukan folder kerja), jadi exe bisa dijalankan
 dari mana saja. Keduanya dikompilasi GUI-subsystem sehingga **tidak pernah**
@@ -244,6 +285,7 @@ internal/auth              bcrypt + JWT + middleware + seed admin
 internal/server            http, routes, REST API, WebSocket hub + broker
 internal/agent             client, heartbeat, sysinfo, screen, input, terminal, dll
 internal/autostart         Scheduled Task (auto-start) via schtasks
+internal/discovery         auto-discovery server di LAN (UDP broadcast)
 internal/wol               Wake-on-LAN (magic packet)
 internal/winui             dialog Windows (MessageBox) + elevasi UAC (stub di Linux)
 web/                       frontend (HTML + CSS + Vanilla JS), di-embed

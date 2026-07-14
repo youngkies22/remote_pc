@@ -94,6 +94,10 @@ func (s *session) dispatch(ctx context.Context, env *protocol.Envelope) {
 	case protocol.TypePowerRestart:
 		s.powerControl(true)
 
+	// --- Pesan ke client ---
+	case protocol.TypeMessage:
+		s.showMessage(env)
+
 	default:
 		s.log.Debug("pesan server tak dikenal", zap.String("type", string(env.Type)))
 	}

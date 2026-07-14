@@ -6,6 +6,7 @@ package config
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"gopkg.in/yaml.v3"
 )
@@ -69,9 +70,13 @@ type ServerConfig struct {
 
 // AgentSection menyimpan identitas dan pengaturan koneksi agent.
 //
-// Cara mengarahkan agent ke server: cukup isi ServerHost (IP LAN komputer server)
-// dan ServerPort. ServerURL akan dibangun otomatis dari keduanya. ServerURL hanya
-// dipakai langsung bila ServerHost dikosongkan (kompatibilitas config lama).
+// Cara mengarahkan agent ke server:
+//   - ServerHost = "auto" atau dikosongkan (default): agent MENEMUKAN server
+//     otomatis di LAN lewat UDP broadcast (tidak perlu tahu IP/port sama sekali).
+//   - ServerHost diisi IP: agent langsung ke IP itu (dipakai bila server & agent
+//     beda subnet sehingga broadcast tidak menjangkau).
+//
+// ServerURL hanya dipakai langsung bila ditulis manual (kompatibilitas config lama).
 type AgentSection struct {
 	ServerHost       string `yaml:"server_host,omitempty"`
 	ServerPort       int    `yaml:"server_port,omitempty"`
@@ -81,6 +86,10 @@ type AgentSection struct {
 	DeviceToken      string `yaml:"device_token"`
 	ReconnectSeconds int    `yaml:"reconnect_seconds"`
 	HeartbeatSeconds int    `yaml:"heartbeat_seconds"`
+
+	// AutoDiscover dihitung saat applyDefaults (bukan dari file). Bila true, agent
+	// mencari server via UDP broadcast alih-alih memakai ServerURL tetap.
+	AutoDiscover bool `yaml:"-"`
 }
 
 // AgentConfig adalah konfigurasi lengkap untuk aplikasi agent.
@@ -157,7 +166,10 @@ func defaultServerConfig() *ServerConfig {
 func defaultAgentConfig() *AgentConfig {
 	return &AgentConfig{
 		Agent: AgentSection{
-			ServerURL:        "ws://127.0.0.1:7000/ws/agent",
+			// Kosong = mode auto-discovery (default): tanpa config apa pun, agent
+			// tetap bisa menemukan server di LAN.
+			ServerHost:       "auto",
+			ServerPort:       7000,
 			ReconnectSeconds: 5,
 			HeartbeatSeconds: 5,
 		},
@@ -203,22 +215,26 @@ func (c *ServerConfig) applyDefaults() {
 }
 
 func (c *AgentConfig) applyDefaults() {
-	// Bila server_host diisi (config gaya baru: IP + port), bangun server_url
-	// darinya. Ini yang menjadi sumber kebenaran sehingga user cukup mengetik IP
-	// dan port tanpa perlu tahu format URL WebSocket.
-	if c.Agent.ServerHost != "" {
+	if c.Agent.ServerPort == 0 {
+		c.Agent.ServerPort = 7000 // juga dipakai sebagai port UDP discovery
+	}
+	host := strings.ToLower(strings.TrimSpace(c.Agent.ServerHost))
+	switch {
+	case host == "" || host == "auto":
+		// Mode auto-discovery: server ditemukan saat runtime lewat UDP broadcast,
+		// kecuali user sudah menuliskan server_url manual (config lama).
+		if c.Agent.ServerURL == "" {
+			c.Agent.AutoDiscover = true
+		}
+	default:
+		// server_host berisi IP: bangun server_url langsung. User cukup mengetik IP
+		// dan port tanpa perlu tahu format URL WebSocket.
 		scheme := "ws"
 		if c.Agent.UseTLS {
 			scheme = "wss"
 		}
-		if c.Agent.ServerPort == 0 {
-			c.Agent.ServerPort = 7000
-		}
 		c.Agent.ServerURL = fmt.Sprintf("%s://%s:%d/ws/agent",
 			scheme, c.Agent.ServerHost, c.Agent.ServerPort)
-	}
-	if c.Agent.ServerURL == "" {
-		c.Agent.ServerURL = "ws://127.0.0.1:7000/ws/agent"
 	}
 	if c.Agent.ReconnectSeconds == 0 {
 		c.Agent.ReconnectSeconds = 5

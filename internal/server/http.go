@@ -13,6 +13,7 @@ import (
 
 	"remote_pc/internal/auth"
 	"remote_pc/internal/config"
+	"remote_pc/internal/discovery"
 	"remote_pc/internal/logger"
 	"remote_pc/internal/server/api"
 	"remote_pc/internal/server/ws"
@@ -70,6 +71,10 @@ func New(cfg *config.ServerConfig, store *storage.Store, log *logger.Loggers) (*
 func (s *Server) Run(ctx context.Context) error {
 	sweepCtx, stopSweep := context.WithCancel(ctx)
 	go s.runOfflineSweeper(sweepCtx)
+
+	// Responder auto-discovery: agent di LAN yang sama bisa menemukan server ini
+	// tanpa perlu disetel IP/port-nya secara manual.
+	go discovery.Serve(sweepCtx, s.cfg.Server.Port, s.cfg.Server.TLS.Enabled, s.log.App)
 
 	errCh := make(chan error, 1)
 	go func() {

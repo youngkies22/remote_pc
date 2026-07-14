@@ -26,8 +26,9 @@ func (s *Server) logReachableURLs() {
 			zap.String("dashboard", fmt.Sprintf("%s://%s:%d", scheme, ip, port)),
 			zap.String("agent_server_url", fmt.Sprintf("%s://%s:%d/ws/agent", wsScheme, ip, port)))
 	}
-	s.log.App.Info("isikan agent_server_url di atas ke config/agent.yaml pada PC siswa, " +
-		"lalu buka Windows Firewall untuk port tersebut")
+	s.log.App.Info("agent dengan server_host \"auto\" (default) akan menemukan server ini sendiri " +
+		"di LAN yang sama — tidak perlu mengisi IP. Isi agent_server_url di atas ke agent.yaml " +
+		"hanya bila PC siswa berada di subnet berbeda")
 }
 
 // lanIPv4s mengembalikan daftar alamat IPv4 non-loopback pada interface yang aktif.

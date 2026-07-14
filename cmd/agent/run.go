@@ -47,18 +47,11 @@ func newRun(configPath string) winsvc.RunFunc {
 }
 
 // runConsole menjalankan agent di latar belakang tanpa jendela. Bila config belum
-// ada, dibuatkan template dan user diberi tahu lewat dialog (bukan terminal).
+// ada, dibuatkan otomatis dengan default "auto" (auto-discovery) lalu LANGSUNG
+// jalan — tidak perlu diisi IP server dulu.
 func runConsole(configPath string) {
-	created, err := ensureConfig(configPath)
-	if err != nil {
+	if _, err := ensureConfig(configPath); err != nil {
 		winui.MessageBox(appName, "Gagal menyiapkan konfigurasi:\n"+err.Error(), true)
-		return
-	}
-	if created {
-		winui.MessageBox(appName,
-			"File konfigurasi baru dibuat di:\n"+configPath+
-				"\n\nBuka file itu, isi server_host (IP PC server) dan server_port,\n"+
-				"lalu jalankan agent lagi untuk tersambung.", false)
 		return
 	}
 

@@ -3,6 +3,7 @@ package api
 import (
 	"net/http"
 	"sort"
+	"strings"
 	"time"
 
 	"remote_pc/internal/model"
@@ -143,6 +144,94 @@ func (a *API) Power(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	a.writeJSON(w, http.StatusOK, map[string]string{"status": "sent", "action": req.Action})
+}
+
+// Message meminta agent menampilkan dialog pesan di layar komputer siswa.
+// Fire-and-forget: server tidak menunggu balasan agent.
+func (a *API) Message(w http.ResponseWriter, r *http.Request) {
+	var req protocol.MessageRequest
+	if !a.decodeBody(w, r, &req) {
+		return
+	}
+	if strings.TrimSpace(req.Text) == "" {
+		a.writeError(w, http.StatusBadRequest, "isi pesan tidak boleh kosong")
+		return
+	}
+	deviceID := r.PathValue("id")
+	if !a.hub.Notify(deviceID, protocol.TypeMessage, req) {
+		a.writeError(w, http.StatusBadGateway, "agent tidak terhubung")
+		return
+	}
+	a.writeJSON(w, http.StatusOK, map[string]string{"status": "sent"})
+}
+
+// targetIDs menentukan device tujuan aksi massal. Bila ids kosong, seluruh device
+// online menjadi target; bila diisi, hanya ids tersebut (mis. satu grup subnet).
+func (a *API) targetIDs(ids []string) []string {
+	if len(ids) > 0 {
+		return ids
+	}
+	out := make([]string, 0)
+	for _, d := range a.store.Devices.All() {
+		if a.hub.IsOnline(d.ID) {
+			out = append(out, d.ID)
+		}
+	}
+	return out
+}
+
+// PowerAll mengirim perintah shutdown/restart ke banyak device sekaligus. Body:
+// {action, ids?}. Bila ids kosong, berlaku untuk seluruh device online.
+func (a *API) PowerAll(w http.ResponseWriter, r *http.Request) {
+	var req struct {
+		Action string   `json:"action"`
+		IDs    []string `json:"ids"`
+	}
+	if !a.decodeBody(w, r, &req) {
+		return
+	}
+	var t protocol.MessageType
+	switch req.Action {
+	case "shutdown":
+		t = protocol.TypePowerShutdown
+	case "restart":
+		t = protocol.TypePowerRestart
+	default:
+		a.writeError(w, http.StatusBadRequest, "action harus 'shutdown' atau 'restart'")
+		return
+	}
+	sent := 0
+	for _, id := range a.targetIDs(req.IDs) {
+		if a.hub.Notify(id, t, nil) {
+			sent++
+		}
+	}
+	a.writeJSON(w, http.StatusOK, map[string]interface{}{"status": "sent", "count": sent})
+}
+
+// MessageAll mengirim pesan ke banyak device sekaligus. Body: {title, text, ids?}.
+// Bila ids kosong, berlaku untuk seluruh device online.
+func (a *API) MessageAll(w http.ResponseWriter, r *http.Request) {
+	var req struct {
+		Title string   `json:"title"`
+		Text  string   `json:"text"`
+		IDs   []string `json:"ids"`
+	}
+	if !a.decodeBody(w, r, &req) {
+		return
+	}
+	if strings.TrimSpace(req.Text) == "" {
+		a.writeError(w, http.StatusBadRequest, "isi pesan tidak boleh kosong")
+		return
+	}
+	payload := protocol.MessageRequest{Title: req.Title, Text: req.Text}
+	sent := 0
+	for _, id := range a.targetIDs(req.IDs) {
+		if a.hub.Notify(id, protocol.TypeMessage, payload) {
+			sent++
+		}
+	}
+	a.writeJSON(w, http.StatusOK, map[string]interface{}{"status": "sent", "count": sent})
 }
 
 // Stats mengembalikan ringkasan untuk kartu dashboard.

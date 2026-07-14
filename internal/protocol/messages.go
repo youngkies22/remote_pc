@@ -176,3 +176,12 @@ type TermStart struct {
 type TermData struct {
 	Data string `json:"data"`
 }
+
+// --- Pesan ke client (server -> agent, fire-and-forget) ---
+
+// MessageRequest dipakai TypeMessage untuk menampilkan dialog pesan di layar
+// komputer siswa (agent). Title judul dialog, Text isi pesan.
+type MessageRequest struct {
+	Title string `json:"title"`
+	Text  string `json:"text"`
+}

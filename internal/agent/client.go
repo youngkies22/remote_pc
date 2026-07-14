@@ -6,6 +6,7 @@ package agent
 import (
 	"context"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -13,9 +14,14 @@ import (
 
 	"remote_pc/internal/agent/sysinfo"
 	"remote_pc/internal/config"
+	"remote_pc/internal/discovery"
 	"remote_pc/internal/model"
 	"remote_pc/internal/protocol"
 )
+
+// discoverTimeout membatasi lama tunggu satu percobaan auto-discovery. Bila gagal,
+// loop reconnect akan mencoba lagi setelah ReconnectSeconds.
+const discoverTimeout = 3 * time.Second
 
 // Client mengelola koneksi agent ke server, termasuk reconnect otomatis.
 type Client struct {
@@ -59,8 +65,12 @@ func (c *Client) Run(ctx context.Context) error {
 
 // connectAndServe membuka satu koneksi, registrasi, lalu melayani sampai putus.
 func (c *Client) connectAndServe(parent context.Context) error {
+	url, err := c.resolveServerURL()
+	if err != nil {
+		return err
+	}
 	dialer := websocket.Dialer{HandshakeTimeout: 15 * time.Second}
-	wsConn, _, err := dialer.DialContext(parent, c.cfg.Agent.ServerURL, nil)
+	wsConn, _, err := dialer.DialContext(parent, url, nil)
 	if err != nil {
 		return err
 	}
@@ -88,6 +98,27 @@ func (c *Client) connectAndServe(parent context.Context) error {
 	go sess.writer(ctx, cancel)
 	go sess.reader(ctx, cancel)
 	return sess.heartbeatLoop(ctx, time.Duration(c.cfg.Agent.HeartbeatSeconds)*time.Second)
+}
+
+// resolveServerURL menentukan URL WebSocket server. Dalam mode auto-discovery,
+// server dicari lewat UDP broadcast di LAN setiap kali koneksi hendak dibuka
+// (sehingga tetap bekerja walau IP server berubah). Selain itu, memakai
+// ServerURL tetap dari konfigurasi.
+func (c *Client) resolveServerURL() (string, error) {
+	if !c.cfg.Agent.AutoDiscover {
+		return c.cfg.Agent.ServerURL, nil
+	}
+	host, port, useTLS, err := discovery.Discover(c.cfg.Agent.ServerPort, discoverTimeout)
+	if err != nil {
+		return "", fmt.Errorf("auto-discovery server gagal: %w", err)
+	}
+	scheme := "ws"
+	if useTLS {
+		scheme = "wss"
+	}
+	url := fmt.Sprintf("%s://%s:%d/ws/agent", scheme, host, port)
+	c.log.Info("server ditemukan via auto-discovery", zap.String("url", url))
+	return url, nil
 }
 
 // register mengirim pesan registrasi dan memproses balasan server.

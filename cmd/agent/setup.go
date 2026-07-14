@@ -15,16 +15,19 @@ const taskName = "RemotePCAgent"
 const appName = "Remote PC Agent"
 
 // configTemplate adalah isi awal agent.yaml yang dibuat otomatis bila belum ada.
-// User cukup mengganti server_host dan server_port.
+// Default "auto": agent menemukan server sendiri di LAN, tanpa perlu diisi apa pun.
 const configTemplate = `# Konfigurasi agent Remote PC.
-# Isi server_host dengan IP komputer SERVER (PC guru) dan server_port dengan port
-# server (default 7000). IP server tercetak di layar server saat dinyalakan.
+#
+# server_host: "auto" (default) => agent MENEMUKAN server otomatis di jaringan
+#   (LAN yang sama) lewat UDP broadcast. Tidak perlu tahu IP/port server.
+#   Ganti dengan IP server HANYA bila server & PC ini beda subnet/jaringan
+#   sehingga penemuan otomatis tidak menjangkau (mis. server_host: "192.168.1.10").
 #
 # device_id & device_token BIARKAN KOSONG - server mengisinya otomatis saat agent
 # pertama kali registrasi, lalu tersimpan kembali ke file ini.
 
 agent:
-  server_host: "192.168.1.10"   # GANTI dengan IP PC server (guru)
+  server_host: "auto"
   server_port: 7000
   use_tls: false
   device_id: ""
@@ -108,15 +111,10 @@ func enableAutostart(configPath string) {
 		return
 	}
 
-	created, err := ensureConfig(configPath)
-	if err != nil {
+	// Config dibuat otomatis dengan default "auto" (auto-discovery) bila belum ada.
+	// Tidak perlu diisi IP server dulu — langsung lanjut pasang auto-start.
+	if _, err := ensureConfig(configPath); err != nil {
 		winui.MessageBox(appName, "Gagal menyiapkan konfigurasi:\n"+err.Error(), true)
-		return
-	}
-	if created {
-		winui.MessageBox(appName,
-			"Konfigurasi baru dibuat di:\n"+configPath+
-				"\n\nIsi dulu server_host (IP server) dan server_port, lalu jalankan installer lagi.", false)
 		return
 	}
 

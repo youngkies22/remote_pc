@@ -124,6 +124,20 @@ async function powerAction(action) {
   }
 }
 
+async function sendMessage() {
+  const text = prompt("Tulis pesan yang akan muncul di layar komputer ini:");
+  if (!text) return;
+  try {
+    await RP.api("/message", {
+      method: "POST",
+      body: JSON.stringify({ title: "Pesan dari Guru", text }),
+    });
+    alert("Pesan terkirim.");
+  } catch (err) {
+    alert("Gagal mengirim pesan: " + err.message);
+  }
+}
+
 async function removeDevice() {
   if (!confirm("Hapus device ini dari daftar?")) return;
   try {

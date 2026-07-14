@@ -25,18 +25,23 @@
     <div class="panel">
       <div class="panel-header">
         <span>Perangkat</span>
-        <span class="muted" id="refresh-note" style="font-size:0.8rem">memuat…</span>
+        <span class="actions">
+          <button class="btn" onclick="messageAll()" title="Kirim pesan ke semua PC online">💬 Pesan Semua</button>
+          <button class="btn" onclick="powerAll('restart')" title="Restart semua PC online">⟳ Restart Semua</button>
+          <button class="btn btn-danger" onclick="powerAll('shutdown')" title="Matikan semua PC online">⏻ Shutdown Semua</button>
+          <span class="muted" id="refresh-note" style="font-size:0.8rem">memuat…</span>
+        </span>
       </div>
       <div class="table-scroll">
         <table>
           <thead>
             <tr>
               <th>Hostname</th><th>User</th><th>IP</th><th>Windows</th>
-              <th>CPU</th><th>RAM</th><th>Status</th><th>Terakhir</th>
+              <th>CPU</th><th>RAM</th><th>Status</th><th>Terakhir</th><th class="text-end">Aksi</th>
             </tr>
           </thead>
           <tbody id="device-rows">
-            <tr><td colspan="8" class="soon">Belum ada perangkat.</td></tr>
+            <tr><td colspan="9" class="soon">Belum ada perangkat.</td></tr>
           </tbody>
         </table>
       </div>

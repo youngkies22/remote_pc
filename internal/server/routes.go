@@ -40,6 +40,11 @@ func registerRoutes(mux *http.ServeMux, a *api.API, wsh *ws.Handler, mw *auth.Mi
 	mux.Handle("DELETE /api/devices/{id}", mw.API(http.HandlerFunc(a.DeleteDevice)))
 	post("/api/devices/{id}/wake", a.Wake)
 	post("/api/devices/{id}/power", a.Power)
+	post("/api/devices/{id}/message", a.Message)
+
+	// Aksi massal (banyak device sekaligus / per grup subnet).
+	post("/api/devices/power-all", a.PowerAll)
+	post("/api/devices/message-all", a.MessageAll)
 
 	// Tahap 4/5/11/12 — perintah request/response ke agent.
 	get("/api/devices/{id}/sysinfo", a.SysInfo)
