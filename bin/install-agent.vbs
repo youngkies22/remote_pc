@@ -47,7 +47,7 @@ If Not fso.FileExists(cfgPath) Then
         If Err.Number = 0 Then
             f.WriteLine "agent:"
             f.WriteLine "  server_host: " & q & ip & q
-            f.WriteLine "  server_port: 7000"
+            f.WriteLine "  server_port: 9000"
             f.WriteLine "  use_tls: false"
             f.Close
         End If

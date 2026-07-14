@@ -11,7 +11,7 @@
 
 agent:
   server_host: "auto"           # "auto" = temukan server sendiri di jaringan
-  server_port: 7000
+  server_port: 9000
   use_tls: false                # true bila server memakai HTTPS/WSS
   device_id: ""
   device_token: ""

@@ -78,7 +78,7 @@ minta izin Administrator (popup UAC) dan berjalan **senyap tanpa jendela hitam**
    Muncul dialog "Berhasil".
 4. **Catat IP PC guru** (mis. `192.168.1.10`) — dipakai di config agent. Lihat IP
    LAN PC ini lewat `ipconfig`, atau dari log server. Buka dashboard di browser:
-   `http://IP-PC-GURU:7000` (atau `http://127.0.0.1:7000` di PC guru sendiri).
+   `http://IP-PC-GURU:9000` (atau `http://127.0.0.1:9000` di PC guru sendiri).
 
 > **Catatan first-run:** kalau `config.yaml` belum ada, `install-server.vbs`
 > pertama akan **membuat config default** (dengan kunci rahasia acak yang aman)
@@ -95,7 +95,7 @@ minta izin Administrator (popup UAC) dan berjalan **senyap tanpa jendela hitam**
 
    Saat pertama kali, installer **menanyakan IP server**:
    - **Isi IP server** (mis. `11.11.11.10`) — cara paling andal, selalu berhasil
-     selama TCP 7000 terbuka. **Wajib** bila server ada di **Proxmox/Docker** atau
+     selama TCP 9000 terbuka. **Wajib** bila server ada di **Proxmox/Docker** atau
      **beda subnet**.
    - **Kosongkan** → mode **auto-discovery** (agent mencari server sendiri).
      Hanya berhasil bila server & PC siswa berada di **LAN/subnet yang sama** dan
@@ -127,7 +127,7 @@ di samping `agent.exe` dan ganti `server_host` dari `"auto"` ke IP server:
 ```yaml
 agent:
   server_host: "192.168.1.10"   # "auto" = cari sendiri; isi IP untuk paksa ke server tertentu
-  server_port: 7000
+  server_port: 9000
   use_tls: false
   device_id: ""                 # dibiarkan kosong — diisi server otomatis
   device_token: ""              # dibiarkan kosong — diisi server otomatis
@@ -164,7 +164,7 @@ port firewall di host Linux) ada di [`docker/README.md`](docker/README.md).
 
 ## Cara memakai (di dashboard guru)
 
-1. Buka `http://IP-PC-GURU:7000` di browser.
+1. Buka `http://IP-PC-GURU:9000` di browser.
 2. Login dengan akun default:
    - Username: **`admin`**
    - Password: **`admin123`** — **segera ganti untuk keamanan.**
@@ -234,13 +234,13 @@ menghentikan proses yang sedang jalan, gunakan **Task Manager**. Menghapus total
   aplikasi otomatis aktif sendiri.
 - Butuh **Administrator (UAC)** saat install karena mendaftarkan auto-start &
   membuka firewall adalah perubahan sistem Windows — bukan keterbatasan program.
-- Jaringan: server bind `0.0.0.0:7000`. Pastikan PC guru & siswa **di LAN yang
-  sama** dan port **7000** tidak diblokir router. Auto-discovery memakai port
-  **UDP 7000** (WebSocket memakai **TCP 7000**); installer server membuka
+- Jaringan: server bind `0.0.0.0:9000`. Pastikan PC guru & siswa **di LAN yang
+  sama** dan port **9000** tidak diblokir router. Auto-discovery memakai port
+  **UDP 9000** (WebSocket memakai **TCP 9000**); installer server membuka
   keduanya di firewall otomatis.
 - **Kalau server sudah pernah di-install sebelum fitur auto-discovery ada,**
   jalankan **`server.exe enable` sekali lagi** (atau dobel-klik
-  `install-server.vbs`) agar port **UDP** 7000 ikut dibuka di firewall — tanpa
+  `install-server.vbs`) agar port **UDP** 9000 ikut dibuka di firewall — tanpa
   itu, siaran pencarian dari agent akan terblokir.
 
 ---

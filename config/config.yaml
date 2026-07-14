@@ -5,7 +5,7 @@ server:
   # 0.0.0.0 = server mendengar di semua interface agar PC siswa di LAN bisa
   # terhubung. Untuk uji di satu PC saja, ganti ke 127.0.0.1.
   host: "0.0.0.0"
-  port: 7000               # port default sesuai spesifikasi (buka di Windows Firewall)
+  port: 9000               # port default (buka di Windows Firewall)
   tls:
     enabled: false         # aktifkan bila cert_file & key_file tersedia (HTTPS/WSS)
     cert_file: ""

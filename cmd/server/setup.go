@@ -87,7 +87,7 @@ const configTemplate = `# Konfigurasi server Remote PC.
 
 server:
   host: "0.0.0.0"
-  port: 7000
+  port: 9000
   tls:
     enabled: false
     cert_file: ""

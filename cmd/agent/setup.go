@@ -28,7 +28,7 @@ const configTemplate = `# Konfigurasi agent Remote PC.
 
 agent:
   server_host: "auto"
-  server_port: 7000
+  server_port: 9000
   use_tls: false
   device_id: ""
   device_token: ""

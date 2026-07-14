@@ -22,7 +22,7 @@ COPY docker/entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh \
     && mkdir -p /app/config /app/data /app/logs /app/screenshots /app/uploads /app/downloads \
     && chown -R remotepc:remotepc /app
-EXPOSE 7000
+EXPOSE 9000
 # Container start sebagai root agar entrypoint bisa membetulkan kepemilikan
 # folder yang di-bind-mount dari host, lalu turun ke user "remotepc" sendiri
 # sebelum menjalankan server (lihat entrypoint.sh).

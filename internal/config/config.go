@@ -155,7 +155,7 @@ func readYAML(path string, out interface{}) error {
 
 func defaultServerConfig() *ServerConfig {
 	return &ServerConfig{
-		Server:    ServerSection{Host: "127.0.0.1", Port: 7000},
+		Server:    ServerSection{Host: "127.0.0.1", Port: 9000},
 		Auth:      AuthSection{JWTSecret: "ubah-secret-ini-di-produksi", JWTExpiryHours: 24},
 		Storage:   defaultStorage(),
 		Heartbeat: HeartbeatSection{IntervalSeconds: 5, OfflineAfterSeconds: 15},
@@ -169,7 +169,7 @@ func defaultAgentConfig() *AgentConfig {
 			// Kosong = mode auto-discovery (default): tanpa config apa pun, agent
 			// tetap bisa menemukan server di LAN.
 			ServerHost:       "auto",
-			ServerPort:       7000,
+			ServerPort:       9000,
 			ReconnectSeconds: 5,
 			HeartbeatSeconds: 5,
 		},
@@ -196,7 +196,7 @@ func (c *ServerConfig) applyDefaults() {
 		c.Server.Host = "127.0.0.1"
 	}
 	if c.Server.Port == 0 {
-		c.Server.Port = 7000
+		c.Server.Port = 9000
 	}
 	if c.Auth.JWTSecret == "" {
 		c.Auth.JWTSecret = "ubah-secret-ini-di-produksi"
@@ -216,7 +216,7 @@ func (c *ServerConfig) applyDefaults() {
 
 func (c *AgentConfig) applyDefaults() {
 	if c.Agent.ServerPort == 0 {
-		c.Agent.ServerPort = 7000 // juga dipakai sebagai port UDP discovery
+		c.Agent.ServerPort = 9000 // juga dipakai sebagai port UDP discovery
 	}
 	host := strings.ToLower(strings.TrimSpace(c.Agent.ServerHost))
 	switch {

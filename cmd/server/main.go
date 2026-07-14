@@ -52,7 +52,7 @@ func main() {
 	if created {
 		winui.MessageBox(appName,
 			"File konfigurasi baru dibuat di:\n"+configPath+
-				"\n\nNilai default (host 0.0.0.0, port 7000, jwt_secret acak) sudah aman "+
+				"\n\nNilai default (host 0.0.0.0, port 9000, jwt_secret acak) sudah aman "+
 				"dipakai langsung. Jalankan server lagi untuk mulai.\n\n"+
 				"(Opsional) Jalankan installer server sebagai admin agar server otomatis "+
 				"menyala tiap PC dinyalakan + firewall dibuka otomatis.", false)

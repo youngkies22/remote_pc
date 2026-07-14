@@ -7,7 +7,7 @@ services:
     container_name: remote-pc-server
     restart: unless-stopped
     ports:
-      - "7000:7000"
+      - "9000:9000"
     volumes:
       - ./data/config:/app/config
       - ./data/data:/app/data
