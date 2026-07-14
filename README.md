@@ -66,8 +66,9 @@ minta izin Administrator (popup UAC) dan berjalan **senyap tanpa jendela hitam**
 
 1. Buat folder, mis. `C:\RemotePC\`.
 2. Salin ke folder itu: **`server-amd64.exe`** dan **`install-server.vbs`**.
-3. **Ganti nama** `server-amd64.exe` → **`server.exe`** *(installer mencari nama `server.exe`)*.
-4. **Dobel-klik `install-server.vbs`** → klik **"Yes"** pada popup Windows.
+   *(Rename ke `server.exe` opsional — installer mengenali `server-amd64.exe`,
+   `server-386.exe`, maupun `server.exe`.)*
+3. **Dobel-klik `install-server.vbs`** → klik **"Yes"** pada popup Windows.
 
    Selesai. Server kini:
    - berjalan tersembunyi di latar belakang,
@@ -75,7 +76,7 @@ minta izin Administrator (popup UAC) dan berjalan **senyap tanpa jendela hitam**
    - **port firewall dibuka otomatis** agar PC siswa bisa menyambung.
 
    Muncul dialog "Berhasil".
-5. **Catat IP PC guru** (mis. `192.168.1.10`) — dipakai di config agent. Lihat IP
+4. **Catat IP PC guru** (mis. `192.168.1.10`) — dipakai di config agent. Lihat IP
    LAN PC ini lewat `ipconfig`, atau dari log server. Buka dashboard di browser:
    `http://IP-PC-GURU:7000` (atau `http://127.0.0.1:7000` di PC guru sendiri).
 
@@ -84,23 +85,31 @@ minta izin Administrator (popup UAC) dan berjalan **senyap tanpa jendela hitam**
 > lalu berhenti sambil menampilkan dialog. **Dobel-klik `install-server.vbs`
 > sekali lagi** untuk benar-benar mengaktifkan auto-start.
 
-### 2) PC siswa (agent) — cukup install, tanpa setting IP
-
-Berkat **auto-discovery**, agent menemukan server sendiri di LAN. **Tidak perlu
-membuat `agent.yaml` atau mengetik IP server sama sekali.**
+### 2) PC siswa (agent)
 
 1. Buat folder, mis. `C:\RemotePC\`.
 2. Salin ke folder itu: **`agent-amd64.exe`** dan **`install-agent.vbs`**.
-3. **Ganti nama** `agent-amd64.exe` → **`agent.exe`**.
-4. **Dobel-klik `install-agent.vbs`** → klik **"Yes"**.
+   *(Rename ke `agent.exe` **tidak perlu** — installer mengenali `agent-amd64.exe`,
+   `agent-386.exe`, maupun `agent.exe` otomatis.)*
+3. **Dobel-klik `install-agent.vbs`** → klik **"Yes"**.
 
-   Selesai. Agent membuat config default (`server_host: "auto"`), berjalan
-   tersembunyi, **otomatis aktif setiap siswa login**, dan langsung mencari
-   server di jaringan. Dalam beberapa detik PC ini muncul di dashboard guru.
+   Saat pertama kali, installer **menanyakan IP server**:
+   - **Isi IP server** (mis. `11.11.11.10`) — cara paling andal, selalu berhasil
+     selama TCP 7000 terbuka. **Wajib** bila server ada di **Proxmox/Docker** atau
+     **beda subnet**.
+   - **Kosongkan** → mode **auto-discovery** (agent mencari server sendiri).
+     Hanya berhasil bila server & PC siswa berada di **LAN/subnet yang sama** dan
+     server **bukan** di dalam Docker.
 
-> **Deploy ke banyak PC siswa sekaligus:** salin **dua file yang sama**
-> (`agent.exe` + `install-agent.vbs`) ke semua PC siswa. Tiap PC cuma perlu
-> **1× dobel-klik + 1× klik Yes** — tanpa config apa pun.
+   Selesai. Agent berjalan tersembunyi, **otomatis aktif setiap siswa login**.
+   Dalam beberapa detik PC ini muncul di dashboard guru.
+
+> **Deploy ke banyak PC siswa sekaligus:** buat **satu** `agent.yaml` berisi IP
+> server, lalu salin **tiga file** (`agent-amd64.exe` + `agent.yaml` +
+> `install-agent.vbs`) ke semua PC. Karena `agent.yaml` sudah ada, installer
+> **tidak menanyakan IP lagi** — tiap PC cukup **1× dobel-klik + 1× klik Yes**.
+> (Kalau server & semua siswa di LAN yang sama tanpa Docker, cukup dua file saja
+> tanpa `agent.yaml` dan kosongkan IP untuk auto-discovery.)
 
 **Cara kerja auto-discovery:** agent menyiarkan pertanyaan "di mana server?" ke
 LAN (UDP broadcast), server menjawab dengan alamatnya, lalu agent menyambung.
