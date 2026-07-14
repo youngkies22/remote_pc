@@ -1,0 +1,35 @@
+# Konfigurasi server Remote PC.
+# host 0.0.0.0 membuat server mendengar di semua alamat jaringan PC ini, agar PC
+# siswa (agent) di LAN yang sama bisa terhubung. Jangan ganti ke 127.0.0.1 kecuali
+# hanya menguji di PC ini sendiri.
+
+server:
+  host: "0.0.0.0"
+  port: 9000
+  tls:
+    enabled: false
+    cert_file: ""
+    key_file: ""
+
+auth:
+  # Dibuat otomatis & acak saat file ini pertama kali dibuat — aman dipakai
+  # langsung, tidak perlu diganti manual.
+  jwt_secret: "9f15c4a85a1709423941a8b62c563e682338a3c58c4538bbc1e449d064662ea1"
+  jwt_expiry_hours: 24
+
+storage:
+  data_dir: "data"
+  logs_dir: "logs"
+  screenshots_dir: "screenshots"
+  uploads_dir: "uploads"
+  downloads_dir: "downloads"
+
+heartbeat:
+  interval_seconds: 5
+  offline_after_seconds: 15
+
+logging:
+  level: "info"
+  max_size_mb: 50
+  max_backups: 5
+  max_age_days: 30
