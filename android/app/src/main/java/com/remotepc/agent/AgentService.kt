@@ -298,9 +298,9 @@ class AgentService : Service() {
     private fun onScreenStart() {
         val projection = mediaProjection
         if (projection != null) {
-            // Izin MediaProjection masih berlaku (belum di-stop total) — tinggal
-            // buat ulang VirtualDisplay/ImageReader kalau sempat dilepas saat
-            // screen.stop sebelumnya, TANPA minta izin sistem lagi.
+            // Izin MediaProjection + VirtualDisplay masih hidup (tak pernah
+            // dilepas saat stop) — cukup mulai lagi kirim frame, TANPA minta
+            // izin sistem sama sekali. Inilah kunci "izin cukup sekali".
             if (virtualDisplay == null) setupVirtualDisplay(projection)
             beginScreenCapture()
             return
@@ -319,18 +319,20 @@ class AgentService : Service() {
         )
     }
 
-    // screen.stop cuma menghentikan CAPTURE (VirtualDisplay/ImageReader) — token
-    // MediaProjection SENGAJA dibiarkan hidup supaya screen.start berikutnya
-    // (pindah dari grid /hp/live ke tampilan individual, balik lagi, dst) tak
-    // perlu minta izin sistem berulang-ulang. Token baru benar-benar dilepas di
-    // onDestroy() (service berhenti) atau bila sistem sendiri yang mencabutnya
-    // (MediaProjection.Callback.onStop di bawah).
+    // screen.stop HANYA menghentikan pengiriman frame (batalkan coroutine).
+    // VirtualDisplay, ImageReader, dan token MediaProjection SEMUANYA dibiarkan
+    // hidup terus. Alasan penting: di Android 14+ (mis. Android 16), melepas
+    // VirtualDisplay bikin sistem menganggap sesi rekam layar selesai lalu
+    // mencabut izinnya diam-diam — akibatnya screen.start berikutnya (refresh
+    // halaman admin, pindah grid↔individual, dsb) memicu dialog izin lagi.
+    // Dengan membiarkan semua tetap hidup, izin cukup diberikan SEKALI; admin
+    // bebas akses/refresh/pindah halaman tanpa prompt ulang sampai app/service
+    // di HP benar-benar dihentikan (onDestroy) atau siswa mencabut izin sendiri
+    // lewat sistem (MediaProjection.Callback.onStop). Konsekuensi yang memang
+    // disengaja: indikator "sedang merekam layar" tetap tampil selama service
+    // hidup — ini justru bagus untuk transparansi ke siswa.
     private fun onScreenStop() {
         stopScreenCapture()
-        virtualDisplay?.release()
-        virtualDisplay = null
-        imageReader?.close()
-        imageReader = null
     }
 
     private fun onScreenQuality(env: Envelope) {

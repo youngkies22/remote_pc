@@ -5,7 +5,15 @@
 // Klik thumbnail -> buka tampilan penuh per-HP (/device/{id}#screen).
 
 const RECONCILE_MS = 5000;
-const tiles = new Map(); // deviceId -> { ws, tileEl, imgEl, hintEl }
+const BANDWIDTH_MS = 1000; // jendela hitung bandwidth (per detik)
+const tiles = new Map(); // deviceId -> { ws, tileEl, imgEl, hintEl, rateEl, bytes }
+
+// fmtRate memformat byte/detik jadi teks ringkas (KB/s atau MB/s).
+function fmtRate(bytesPerSec) {
+  if (bytesPerSec >= 1024 * 1024) return (bytesPerSec / (1024 * 1024)).toFixed(1) + " MB/s";
+  if (bytesPerSec >= 1024) return (bytesPerSec / 1024).toFixed(0) + " KB/s";
+  return bytesPerSec + " B/s";
+}
 
 function wsUrl(deviceId) {
   const proto = location.protocol === "https:" ? "wss:" : "ws:";
@@ -22,6 +30,7 @@ function makeTile(d) {
     </div>
     <div class="label">
       <span>${escapeHtml(d.hostname || d.id)}</span>
+      <span class="rate" title="Bandwidth yang dipakai HP ini">–</span>
       <span class="badge-dot" title="online"></span>
     </div>`;
   tile.addEventListener("click", () => { location.href = `/device/${encodeURIComponent(d.id)}#screen`; });
@@ -30,6 +39,8 @@ function makeTile(d) {
     tileEl: tile,
     imgEl: tile.querySelector("img"),
     hintEl: tile.querySelector(".hint"),
+    rateEl: tile.querySelector(".rate"),
+    bytes: 0, // akumulasi byte diterima sejak tick bandwidth terakhir
   };
 }
 
@@ -37,6 +48,9 @@ function openStream(id, entry) {
   const ws = new WebSocket(wsUrl(id));
   entry.ws = ws;
   ws.onmessage = (ev) => {
+    // Hitung bandwidth: ukur ukuran mentah pesan (payload base64 = ASCII, jadi
+    // panjang string ≈ jumlah byte yang lewat jaringan, cukup untuk indikator).
+    entry.bytes += (ev.data && ev.data.length) ? ev.data.length : 0;
     let m;
     try { m = JSON.parse(ev.data); } catch { return; }
     if (m.type === "screen.frame" && m.payload && m.payload.data) {
@@ -84,10 +98,27 @@ async function reconcile() {
   const grid = document.getElementById("live-grid");
   if (tiles.size === 0) {
     grid.innerHTML = '<div class="soon">Tidak ada HP online saat ini.</div>';
+    document.getElementById("live-note").textContent = "0 HP online";
   } else if (grid.querySelector(".soon")) {
     grid.querySelector(".soon").remove();
   }
-  document.getElementById("live-note").textContent = `${tiles.size} HP online`;
+  // Saat ada HP, teks header (jumlah + total bandwidth) dikelola tickBandwidth.
+}
+
+// tickBandwidth menghitung bandwidth per HP tiap detik dari byte yang diterima,
+// memperbarui angka di tiap tile, dan total di header.
+function tickBandwidth() {
+  let total = 0;
+  for (const entry of tiles.values()) {
+    const perSec = Math.round(entry.bytes * 1000 / BANDWIDTH_MS);
+    total += perSec;
+    entry.bytes = 0;
+    if (entry.rateEl) entry.rateEl.textContent = fmtRate(perSec);
+  }
+  const note = document.getElementById("live-note");
+  if (tiles.size > 0) {
+    note.textContent = `${tiles.size} HP online · total ${fmtRate(total)}`;
+  }
 }
 
 async function init() {
@@ -96,6 +127,7 @@ async function init() {
   } catch (_) { /* redirect ditangani api() */ }
   await reconcile();
   setInterval(reconcile, RECONCILE_MS);
+  setInterval(tickBandwidth, BANDWIDTH_MS);
 }
 
 init();

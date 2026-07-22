@@ -159,7 +159,8 @@ tbody tr:hover { background: var(--panel-2); }
   align-items: center;
   gap: 0.4rem;
 }
-.live-tile .label span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.live-tile .label span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+.live-tile .rate { color: var(--muted); font-size: 0.72rem; flex: none; white-space: nowrap; }
 .live-tile .badge-dot {
   width: 8px; height: 8px; border-radius: 50%; flex: none;
   background: var(--online);
