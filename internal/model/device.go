@@ -23,6 +23,10 @@ type Metrics struct {
 	DiskTotalGB uint64  `json:"disk_total_gb"`
 	DiskUsedGB  uint64  `json:"disk_used_gb"`
 	UptimeSec   uint64  `json:"uptime_sec"`
+	// BatteryPercent & NetworkType hanya diisi oleh agent Android (omitempty
+	// agar agent Windows yang tidak mengirimnya tidak memengaruhi payload lama).
+	BatteryPercent float64 `json:"battery_percent,omitempty"`
+	NetworkType    string  `json:"network_type,omitempty"` // "wifi" | "cellular" | "none"
 }
 
 // Device merepresentasikan satu komputer yang dimonitor. Disimpan di devices.json.

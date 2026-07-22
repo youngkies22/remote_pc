@@ -33,11 +33,14 @@ function deviceRow(d) {
          onclick="event.stopPropagation();wake('${d.id}', this)"
          title="Kirim Wake-on-LAN (butuh diaktifkan di BIOS PC target)">⚡</button>`
     : "";
+  // Shutdown tidak & tidak akan didukung agent Android (di luar scope
+  // monitor-only BYOD), jadi disembunyikan supaya guru tidak klik tombol
+  // yang diam-diam tidak berefek. Pesan didukung (Tahap A3).
   const msgBtn = online
     ? `<button class="btn" style="${SMALL_BTN}"
          onclick="event.stopPropagation();messageOne('${d.id}')" title="Kirim pesan ke PC ini">💬</button>`
     : "";
-  const offBtn = online
+  const offBtn = online && d.os !== "Android"
     ? `<button class="btn btn-danger" style="${SMALL_BTN}"
          onclick="event.stopPropagation();powerOne('${d.id}','shutdown','${escapeHtml(d.hostname || "")}')" title="Matikan PC ini">⏻</button>`
     : "";

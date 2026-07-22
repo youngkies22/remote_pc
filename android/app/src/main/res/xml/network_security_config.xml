@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Server RemotePC default-nya ws:// (bukan wss://) di jaringan LAN sekolah,
+     jadi cleartext traffic harus diizinkan. Bila server nanti diaktifkan TLS,
+     aturan ini tetap aman karena wss:// tidak terpengaruh cleartextTrafficPermitted. -->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

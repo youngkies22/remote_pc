@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RemotePC Siswa</string>
+    <string name="notif_channel_name">Status Koneksi RemotePC</string>
+    <string name="notif_channel_alert">Peringatan &amp; Pesan Guru</string>
+    <string name="notif_title_connecting">RemotePC — menghubungkan…</string>
+    <string name="notif_title_connected">RemotePC — terhubung ke guru</string>
+    <string name="notif_text">Perangkat ini sedang dipantau untuk sesi praktik.</string>
+    <string name="notif_action_stop">Putuskan</string>
+</resources>

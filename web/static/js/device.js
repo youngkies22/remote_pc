@@ -5,6 +5,23 @@ window.Tabs = {}; // tiap file tab mendaftarkan { activate, deactivate }
 
 let currentTab = "overview";
 let overviewTimer = null;
+let osRestrictionsApplied = false;
+
+// Agent Android (BYOD, Tahap A1-A4) tidak & tidak akan mendukung File
+// Explorer/Terminal/Processes/Services/SysInfo/Restart/Shutdown — di luar
+// scope monitor-only. Disembunyikan supaya guru tidak klik tombol/tab yang
+// diam-diam tidak berefek.
+function applyOsRestrictions(os) {
+  if (os !== "Android") return;
+  ["files", "terminal", "processes", "services", "sysinfo"].forEach((name) => {
+    const tabEl = document.querySelector(`#tabs .tab[data-tab="${name}"]`);
+    if (tabEl) tabEl.style.display = "none";
+  });
+  const btnRestart = document.getElementById("btn-restart");
+  const btnShutdown = document.getElementById("btn-shutdown");
+  if (btnRestart) btnRestart.style.display = "none";
+  if (btnShutdown) btnShutdown.style.display = "none";
+}
 
 // --- Helper bersama (dipakai file tab-*.js) ---
 window.RP = {
@@ -96,15 +113,21 @@ async function overviewRefresh() {
     ovRow("Username", d.username || "-"),
     ovRow("IP Address", d.ip || "-"),
     ovRow("MAC Address", d.mac || "-"),
-    ovRow("Versi Windows", d.windows_version || "-"),
+    ovRow(d.os === "Android" ? "Versi Android" : "Versi Windows", d.windows_version || "-"),
     ovRow("Arsitektur", d.arch || "-"),
     ovRow("CPU", (m.cpu_percent ?? 0) + " %"),
     ovRow("RAM", `${m.ram_used_mb ?? 0} / ${m.ram_total_mb ?? 0} MB (${m.ram_percent ?? 0} %)`),
     ovRow("Disk", `${m.disk_used_gb ?? 0} / ${m.disk_total_gb ?? 0} GB (${m.disk_percent ?? 0} %)`),
     ovRow("Uptime", fmtUptime(m.uptime_sec)),
+    m.battery_percent ? ovRow("Baterai", m.battery_percent + " %") : "",
+    m.network_type ? ovRow("Jaringan", m.network_type === "wifi" ? "Wi-Fi" : m.network_type === "cellular" ? "Data Seluler" : "Tidak ada") : "",
     ovRow("Terakhir terlihat", timeAgo(d.last_seen)),
   ].join("");
   document.getElementById("ov-updated").textContent = "diperbarui " + new Date().toLocaleTimeString("id-ID");
+  if (!osRestrictionsApplied) {
+    osRestrictionsApplied = true;
+    applyOsRestrictions(d.os);
+  }
 }
 
 window.Tabs.overview = {
