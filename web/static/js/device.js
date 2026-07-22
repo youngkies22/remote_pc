@@ -133,7 +133,7 @@ async function overviewRefresh() {
 }
 
 window.Tabs.overview = {
-  activate() { overviewRefresh(); overviewTimer = setInterval(overviewRefresh, 3000); },
+  activate() { overviewRefresh(); overviewTimer = setInterval(overviewRefresh, 1500); },
   deactivate() { clearInterval(overviewTimer); overviewTimer = null; },
 };
 
@@ -177,4 +177,11 @@ function DeviceInit() {
     if (tab) showPanel(tab.dataset.tab);
   });
   window.Tabs.overview.activate();
+
+  // Dibuka dari grid "/hp/live" (klik thumbnail) -> langsung ke tab Live
+  // Screen & mulai koneksi, tak perlu klik dua kali.
+  if (location.hash === "#screen") {
+    showPanel("screen");
+    setTimeout(() => document.getElementById("screen-connect")?.click(), 50);
+  }
 }

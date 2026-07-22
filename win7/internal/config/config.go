@@ -171,7 +171,7 @@ func defaultAgentConfig() *AgentConfig {
 			ServerHost:       "auto",
 			ServerPort:       9000,
 			ReconnectSeconds: 5,
-			HeartbeatSeconds: 5,
+			HeartbeatSeconds: 2,
 		},
 		Logging: defaultLogging(),
 	}
@@ -240,7 +240,7 @@ func (c *AgentConfig) applyDefaults() {
 		c.Agent.ReconnectSeconds = 5
 	}
 	if c.Agent.HeartbeatSeconds == 0 {
-		c.Agent.HeartbeatSeconds = 5
+		c.Agent.HeartbeatSeconds = 2
 	}
 	c.Logging.fillDefaults()
 }

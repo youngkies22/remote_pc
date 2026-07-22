@@ -107,8 +107,8 @@ storage:
   downloads_dir: "downloads"
 
 heartbeat:
-  interval_seconds: 5
-  offline_after_seconds: 15
+  interval_seconds: 2
+  offline_after_seconds: 6
 
 logging:
   level: "info"

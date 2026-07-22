@@ -99,8 +99,17 @@ tbody tr:hover { background: var(--panel-2); }
 .tab.active { background: var(--panel); border-color: var(--border); color: var(--text); }
 .tab.disabled { opacity: 0.5; cursor: not-allowed; }
 
-#screen-stage { min-height: clamp(220px, 60vh, 640px); }
+/* min-height cuma batas BAWAH; tanpa batas ATAS pada gambar, screenshot HP
+   beresolusi potret (tinggi > lebar) bisa merender jauh melampaui viewport.
+   max-height di #screen-img (bukan cuma di :fullscreen) mencegah itu. */
+#screen-stage { min-height: clamp(200px, 40vh, 480px); }
+#screen-img { max-height: min(65vh, 480px); }
 #term-output { height: clamp(240px, 50vh, 560px); }
+
+/* Mode kecil (toggle "Perkecil" di Live Screen) — satu layar cukup dilihat
+   tanpa perlu scroll, berguna saat memantau sambil buka tab lain. */
+#screen-stage.compact { min-height: 0; height: 220px; }
+#screen-stage.compact #screen-img { max-height: 220px; }
 
 #screen-stage:fullscreen,
 #screen-stage:-webkit-full-screen {
@@ -114,6 +123,46 @@ tbody tr:hover { background: var(--panel-2); }
   max-height: 100%;
   width: auto;
   height: auto;
+}
+
+/* Halaman grid "Live Semua HP" (/hp/live) — banyak thumbnail sekaligus. */
+.live-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.75rem;
+  padding: 1rem;
+}
+.live-tile {
+  background: #000;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+}
+.live-tile:hover { border-color: var(--accent); }
+.live-tile .thumb-wrap {
+  aspect-ratio: 9 / 16;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+}
+.live-tile img { max-width: 100%; max-height: 100%; display: block; }
+.live-tile .hint { color: var(--muted); font-size: 0.75rem; text-align: center; padding: 0.5rem; }
+.live-tile .label {
+  padding: 0.35rem 0.5rem;
+  font-size: 0.8rem;
+  background: var(--panel-2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.4rem;
+}
+.live-tile .label span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.live-tile .badge-dot {
+  width: 8px; height: 8px; border-radius: 50%; flex: none;
+  background: var(--online);
 }
 
 .kv { display: grid; grid-template-columns: 180px 1fr; gap: 0.5rem 1rem; padding: 1.1rem; }

@@ -3,7 +3,7 @@
 // ditampilkan di sini — punya halaman sendiri "/hp" (lihat dashboard-hp.js)
 // supaya tidak tercampur dengan PC.
 
-const REFRESH_MS = 3000;
+const REFRESH_MS = 1500;
 const SMALL_BTN = "font-size:0.75rem;padding:0.25rem 0.5rem";
 
 // Menyimpan device PC (sudah difilter, tanpa Android) terbaru agar aksi

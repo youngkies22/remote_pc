@@ -25,6 +25,7 @@ func registerRoutes(mux *http.ServeMux, a *api.API, wsh *ws.Handler, mw *auth.Mi
 	mux.Handle("GET /{$}", mw.Page(pageHandlerFunc("templates/dashboard.html")))
 	mux.Handle("GET /device/{id}", mw.Page(pageHandlerFunc("templates/device.html")))
 	mux.Handle("GET /hp", mw.Page(pageHandlerFunc("templates/devices_android.html")))
+	mux.Handle("GET /hp/live", mw.Page(pageHandlerFunc("templates/hp_live.html")))
 	mux.Handle("GET /version", mw.Page(pageHandlerFunc("templates/version.html")))
 
 	// REST API publik.

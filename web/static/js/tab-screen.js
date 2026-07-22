@@ -35,6 +35,11 @@
 
   function disconnect() { if (ws) ws.close(); }
 
+  function toggleCompact() {
+    const on = stage().classList.toggle("compact");
+    document.getElementById("screen-compact").textContent = on ? "🔲 Perbesar" : "🔳 Perkecil";
+  }
+
   function toggleFullscreen() {
     if (!document.fullscreenElement) {
       stage().requestFullscreen().catch(() => {});
@@ -97,6 +102,7 @@
 
   document.getElementById("screen-connect").addEventListener("click", connect);
   document.getElementById("screen-disconnect").addEventListener("click", disconnect);
+  document.getElementById("screen-compact").addEventListener("click", toggleCompact);
   document.getElementById("screen-fullscreen").addEventListener("click", toggleFullscreen);
   document.getElementById("screen-quality").addEventListener("change", sendQuality);
   bindInput();

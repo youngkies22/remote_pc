@@ -500,7 +500,7 @@ class AgentService : Service() {
         private const val NOTIF_ID = 1
         private const val NOTIF_ID_SCREEN_REQUEST = 2
         private const val RECONNECT_MS = 5000L
-        private const val HEARTBEAT_MS = 5000L
+        private const val HEARTBEAT_MS = 2000L
         private const val SCREEN_INTERVAL_MS = 300L
         const val ACTION_STOP = "com.remotepc.agent.STOP"
         const val ACTION_SCREEN_GRANTED = "com.remotepc.agent.SCREEN_GRANTED"

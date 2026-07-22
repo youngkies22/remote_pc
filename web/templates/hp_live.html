@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Live Semua HP — Remote PC</title>
+  <link rel="stylesheet" href="/static/css/app.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="brand">Remote<span>PC</span> · Live Semua HP</div>
+    <div class="actions">
+      <button class="btn" onclick="location.href='/hp'">← Daftar HP</button>
+      <span id="live-note" class="muted" style="font-size:0.8rem"></span>
+      <button class="btn" onclick="logout()">Keluar</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <p class="muted" style="font-size:0.85rem;margin-bottom:0.75rem">
+      Thumbnail kecil, hanya untuk memantau sekilas semua HP online sekaligus.
+      <strong>Klik salah satu</strong> untuk membuka tampilan penuh per-HP.
+      Setiap HP yang belum pernah izinkan sesi ini akan menampilkan notifikasi
+      di layarnya masing-masing — thumbnail baru muncul setelah siswa mengetuk
+      &amp; mengizinkan.
+    </p>
+    <div id="live-grid" class="live-grid">
+      <div class="soon">Memuat daftar HP…</div>
+    </div>
+  </div>
+
+  <script src="/static/js/common.js"></script>
+  <script src="/static/js/hp-live.js"></script>
+</body>
+</html>

@@ -158,7 +158,7 @@ func defaultServerConfig() *ServerConfig {
 		Server:    ServerSection{Host: "127.0.0.1", Port: 9000},
 		Auth:      AuthSection{JWTSecret: "ubah-secret-ini-di-produksi", JWTExpiryHours: 24},
 		Storage:   defaultStorage(),
-		Heartbeat: HeartbeatSection{IntervalSeconds: 5, OfflineAfterSeconds: 15},
+		Heartbeat: HeartbeatSection{IntervalSeconds: 2, OfflineAfterSeconds: 6},
 		Logging:   defaultLogging(),
 	}
 }
@@ -171,7 +171,7 @@ func defaultAgentConfig() *AgentConfig {
 			ServerHost:       "auto",
 			ServerPort:       9000,
 			ReconnectSeconds: 5,
-			HeartbeatSeconds: 5,
+			HeartbeatSeconds: 2,
 		},
 		Logging: defaultLogging(),
 	}
@@ -205,10 +205,10 @@ func (c *ServerConfig) applyDefaults() {
 		c.Auth.JWTExpiryHours = 24
 	}
 	if c.Heartbeat.IntervalSeconds == 0 {
-		c.Heartbeat.IntervalSeconds = 5
+		c.Heartbeat.IntervalSeconds = 2
 	}
 	if c.Heartbeat.OfflineAfterSeconds == 0 {
-		c.Heartbeat.OfflineAfterSeconds = 15
+		c.Heartbeat.OfflineAfterSeconds = 6
 	}
 	c.Storage.fillDefaults()
 	c.Logging.fillDefaults()
@@ -240,7 +240,7 @@ func (c *AgentConfig) applyDefaults() {
 		c.Agent.ReconnectSeconds = 5
 	}
 	if c.Agent.HeartbeatSeconds == 0 {
-		c.Agent.HeartbeatSeconds = 5
+		c.Agent.HeartbeatSeconds = 2
 	}
 	c.Logging.fillDefaults()
 }

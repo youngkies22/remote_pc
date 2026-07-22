@@ -3,7 +3,7 @@
 // sesama HP, tapi tak pernah tercampur baris dengan PC. Aksi yang didukung
 // cuma Pesan & Hapus (Shutdown/Restart/Wake tak berlaku utk Android).
 
-const REFRESH_MS = 3000;
+const REFRESH_MS = 1500;
 const SMALL_BTN = "font-size:0.75rem;padding:0.25rem 0.5rem";
 
 let lastDevices = [];

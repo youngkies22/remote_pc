@@ -152,7 +152,7 @@ agent:
   device_id: ""                 # dibiarkan kosong — diisi server otomatis
   device_token: ""              # dibiarkan kosong — diisi server otomatis
   reconnect_seconds: 5
-  heartbeat_seconds: 5
+  heartbeat_seconds: 2
 
 logging:
   level: "info"

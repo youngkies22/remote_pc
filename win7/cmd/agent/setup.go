@@ -33,7 +33,7 @@ agent:
   device_id: ""
   device_token: ""
   reconnect_seconds: 5
-  heartbeat_seconds: 5
+  heartbeat_seconds: 2
 
 logging:
   level: "info"

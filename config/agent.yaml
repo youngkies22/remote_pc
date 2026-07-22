@@ -3,7 +3,7 @@ agent:
     device_id: 9693446f-32e4-4210-9b25-25e916d06d56
     device_token: fadb0a3969dcd0817e54f7a58222ff3cdbe844d68e98a52d6528f8c9af148643
     reconnect_seconds: 5
-    heartbeat_seconds: 5
+    heartbeat_seconds: 2
 logging:
     level: info
     max_size_mb: 50

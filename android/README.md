@@ -9,7 +9,7 @@ terpisah — tidak memengaruhi build server/agent Windows.
 ### A1 — Fondasi (terverifikasi di HP fisik nyata)
 - Layar setup: nama perangkat (nickname), IP/host server, port.
 - Foreground service (`AgentService`) menjaga koneksi WebSocket ke
-  `ws://<host>:<port>/ws/agent`, registrasi, dan heartbeat berkala (5 detik) —
+  `ws://<host>:<port>/ws/agent`, registrasi, dan heartbeat berkala (2 detik) —
   protokolnya identik dengan `internal/agent` (Go), server tidak perlu tahu
   bedanya.
 - Reconnect otomatis tiap 5 detik bila putus.
