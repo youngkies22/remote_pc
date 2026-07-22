@@ -3,6 +3,12 @@ services:
     build:
       context: ..
       dockerfile: docker/Dockerfile
+      args:
+        # Opsional: export GIT_COMMIT=$(git rev-parse --short HEAD) sebelum
+        # `docker compose build` kalau mau commit hash ikut tampil di
+        # halaman /version. Tanpa ini tetap "unknown" — build time tetap
+        # otomatis terisi & cukup untuk memastikan rebuild berhasil.
+        GIT_COMMIT: ${GIT_COMMIT:-unknown}
     image: remote-pc-server:latest
     container_name: remote-pc-server
     restart: unless-stopped

@@ -1,10 +1,13 @@
-// Logika halaman dashboard: memuat statistik + daftar device (dikelompokkan per
-// subnet IP) dan auto-refresh.
+// Logika halaman dashboard PC: memuat statistik + daftar device Windows
+// (dikelompokkan per subnet IP) dan auto-refresh. HP Android SENGAJA tidak
+// ditampilkan di sini — punya halaman sendiri "/hp" (lihat dashboard-hp.js)
+// supaya tidak tercampur dengan PC.
 
 const REFRESH_MS = 3000;
 const SMALL_BTN = "font-size:0.75rem;padding:0.25rem 0.5rem";
 
-// Menyimpan device terbaru agar aksi massal/grup tahu ID mana yang online.
+// Menyimpan device PC (sudah difilter, tanpa Android) terbaru agar aksi
+// massal/grup tahu ID mana yang online.
 let lastDevices = [];
 
 function meter(percent) {
@@ -40,10 +43,12 @@ function deviceRow(d) {
     ? `<button class="btn" style="${SMALL_BTN}"
          onclick="event.stopPropagation();messageOne('${d.id}')" title="Kirim pesan ke PC ini">💬</button>`
     : "";
-  const offBtn = online && d.os !== "Android"
+  const offBtn = online
     ? `<button class="btn btn-danger" style="${SMALL_BTN}"
          onclick="event.stopPropagation();powerOne('${d.id}','shutdown','${escapeHtml(d.hostname || "")}')" title="Matikan PC ini">⏻</button>`
     : "";
+  const delBtn = `<button class="btn btn-danger" style="${SMALL_BTN}"
+         onclick="event.stopPropagation();deleteDevice('${d.id}','${escapeHtml(d.hostname || "")}')" title="Hapus device ini dari daftar">🗑</button>`;
 
   return `<tr onclick="location.href='/device/${id}'">
     <td>${escapeHtml(d.hostname || "-")}</td>
@@ -54,8 +59,20 @@ function deviceRow(d) {
     <td>${meter(d.metrics && d.metrics.ram_percent)}</td>
     <td>${badge}</td>
     <td class="muted">${timeAgo(d.last_seen)}</td>
-    <td class="text-end" style="white-space:nowrap">${wakeBtn}${msgBtn}${offBtn}</td>
+    <td class="text-end" style="white-space:nowrap">${wakeBtn}${msgBtn}${offBtn}${delBtn}</td>
   </tr>`;
+}
+
+// deleteDevice menghapus device dari daftar (mis. PC lama yang sudah tidak
+// dipakai). Bisa dipanggil dari halaman ini maupun dashboard-hp.js.
+async function deleteDevice(id, hostname) {
+  if (!confirm(`Hapus "${hostname || id}" dari daftar?\n\nKalau device ini nyala lagi & connect, ia akan terdaftar ulang sbg device baru.`)) return;
+  try {
+    await api(`/api/devices/${encodeURIComponent(id)}`, { method: "DELETE" });
+    if (typeof refresh === "function") refresh();
+  } catch (err) {
+    alert("Gagal menghapus: " + err.message);
+  }
 }
 
 // groupHeaderRow membuat baris pemisah per subnet, lengkap dengan aksi grup.
@@ -147,7 +164,7 @@ async function messageBulk(ids, label) {
 }
 
 function messageAll() {
-  messageBulk([], "SEMUA PC online");
+  messageBulk(onlinePcIds(), "SEMUA PC online");
 }
 function messageGroup(ids) {
   messageBulk(ids, `grup ini (${ids.length} PC)`);
@@ -182,8 +199,13 @@ async function powerBulk(ids, action, label) {
   }
 }
 
+// "Semua" di halaman ini SENGAJA cuma menargetkan PC (bukan andalkan ids
+// kosong = semua device di server, yang akan ikut menyasar HP Android).
+function onlinePcIds() {
+  return lastDevices.filter((d) => d.status === "online").map((d) => d.id);
+}
 function powerAll(action) {
-  powerBulk([], action, "SEMUA PC online");
+  powerBulk(onlinePcIds(), action, "SEMUA PC online");
 }
 function powerGroup(ids, action) {
   powerBulk(ids, action, `grup ini (${ids.length} PC)`);
@@ -191,19 +213,20 @@ function powerGroup(ids, action) {
 
 async function refresh() {
   try {
-    const [stats, devices] = await Promise.all([
-      api("/api/stats"),
-      api("/api/devices"),
-    ]);
-    lastDevices = devices;
-    document.getElementById("stat-total").textContent = stats.total;
-    document.getElementById("stat-online").textContent = stats.online;
-    document.getElementById("stat-offline").textContent = stats.offline;
+    const devices = await api("/api/devices");
+    // HP Android punya halaman sendiri ("/hp") — jangan tampilkan di sini.
+    const pcDevices = devices.filter((d) => d.os !== "Android");
+    lastDevices = pcDevices;
+
+    const online = pcDevices.filter((d) => d.status === "online").length;
+    document.getElementById("stat-total").textContent = pcDevices.length;
+    document.getElementById("stat-online").textContent = online;
+    document.getElementById("stat-offline").textContent = pcDevices.length - online;
 
     const body = document.getElementById("device-rows");
-    body.innerHTML = devices.length
-      ? buildRows(devices)
-      : '<tr><td colspan="9" class="soon">Belum ada perangkat.</td></tr>';
+    body.innerHTML = pcDevices.length
+      ? buildRows(pcDevices)
+      : '<tr><td colspan="9" class="soon">Belum ada PC.</td></tr>';
 
     document.getElementById("refresh-note").textContent =
       "diperbarui " + new Date().toLocaleTimeString("id-ID");

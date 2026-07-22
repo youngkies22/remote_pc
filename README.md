@@ -19,6 +19,14 @@ menginstal apa pun tambahan.
 
 - 🖥️ **Dashboard** — daftar semua PC siswa, status online/offline realtime,
   **dikelompokkan otomatis per subnet IP** agar rapi walau PC-nya banyak.
+  **HP Android** siswa punya **halaman terpisah** (`/hp`) — tidak pernah
+  tercampur baris dengan PC, walau tetap dikelompokkan per subnet di
+  antara sesama HP.
+- 🗑️ **Hapus device** — tombol hapus langsung dari daftar (dashboard PC
+  maupun halaman HP), untuk PC/HP lama yang sudah tidak dipakai.
+- ℹ️ **Halaman Versi** (`/version`) — cek commit & waktu build server yang
+  sedang berjalan, berguna memastikan rebuild/redeploy benar-benar
+  mengambil kode terbaru.
 - 🔌 **Auto-discovery** — agent **cukup di-install, langsung menemukan server
   sendiri** di LAN. Tidak perlu mengetik IP/port server (masih bisa diarahkan
   manual bila mau).
@@ -34,6 +42,12 @@ menginstal apa pun tambahan.
   grup, atau semua sekaligus).
 - ⏻ **Shutdown / Restart** jarak jauh — per-PC, **per-grup subnet, atau semua PC
   sekaligus** — dan ⚡ **Wake-on-LAN** (menyalakan PC yang mati).
+- 🪟 **Windows 7** juga didukung — agent khusus (`win7/`) untuk PC lama yang belum
+  bisa upgrade, fitur identik dengan agent Windows 10/11.
+- 📱 **Android (HP siswa, BYOD)** — aplikasi terpisah (`android/`) untuk
+  memantau HP pribadi siswa: metrik (RAM/storage/baterai/jaringan), kirim
+  pesan, dan Live Screen (siswa wajib izinkan tiap sesi). *Monitor-only* —
+  sengaja tanpa kontrol jarak jauh/File Explorer/Terminal, sesuai etika BYOD.
 
 ---
 
@@ -54,6 +68,12 @@ meng-compile apa pun**, tinggal pakai:
 > Intel & AMD sama-sama x86-64, jadi **`agent-amd64.exe` yang sama** jalan di
 > keduanya — tidak perlu binary terpisah. Pakai versi `-386` hanya untuk PC
 > Windows 32-bit yang sangat lama.
+
+Untuk PC siswa **Windows 7**, pakai `agent-win7-386.exe`/`agent-win7-amd64.exe`
+di `bin/` (lihat bagian *"Alternatif: agent di PC Windows 7"* di bawah). Untuk
+**HP Android** siswa, aplikasinya di-build terpisah dari folder `android/` —
+tidak ada di tabel di atas karena bukan bagian dari `bin/` Windows (lihat
+*"Opsional: agent Android"* di bawah).
 
 ---
 
@@ -159,6 +179,26 @@ docker compose -f docker/docker-compose.yml up -d --build
 
 Detail lengkap (lokasi volume data, build binary Linux tanpa Docker, buka
 port firewall di host Linux) ada di [`docker/README.md`](docker/README.md).
+
+### 4) Alternatif: agent di PC Windows 7
+
+PC siswa yang masih Windows 7 (tak bisa/belum upgrade) tetap bisa dipantau —
+pakai binary `agent-win7-386.exe` / `agent-win7-amd64.exe` (dibangun dari
+modul Go terpisah `win7/`, fitur identik dengan agent Windows 10/11). Rename
+jadi `agent-386.exe`/`agent-amd64.exe` sebelum dipakai dengan
+`install-agent.vbs` yang sama. Detail & alasan teknis (Go 1.21+ menghapus
+dukungan Windows 7) ada di [`win7/README.md`](win7/README.md).
+
+### 5) Opsional: agent Android untuk HP siswa (BYOD)
+
+Kalau lab sekolah juga pakai HP Android siswa (milik pribadi) untuk praktik,
+tersedia aplikasi Android *monitor-only* terpisah — HP siswa muncul di
+dashboard yang sama, dengan metrik (RAM/storage/baterai/jaringan), kirim
+pesan, dan Live Screen (siswa wajib mengetuk & mengizinkan tiap sesi;
+Android otomatis menampilkan indikator berbagi layar, tak bisa
+disembunyikan). **Sengaja tanpa** kontrol jarak jauh, File Explorer, atau
+Terminal — di luar scope untuk perangkat pribadi siswa. Cara build & install
+APK ada di [`android/README.md`](android/README.md).
 
 ---
 
@@ -299,6 +339,8 @@ internal/wol               Wake-on-LAN (magic packet)
 internal/winui             dialog Windows (MessageBox) + elevasi UAC (stub di Linux)
 web/                       frontend (HTML + CSS + Vanilla JS), di-embed
 docker/                    Dockerfile, docker-compose, build binary Linux (server saja — lihat docker/README.md)
+win7/                      modul Go 1.20 terpisah — agent utk Windows 7 (lihat win7/README.md)
+android/                   modul Kotlin/Gradle terpisah — agent utk HP Android/BYOD (lihat android/README.md)
 ```
 
 **Arsitektur singkat:** server memegang WebSocket `Hub` (RPC ber-UUID) + `Broker`

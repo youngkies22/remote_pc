@@ -12,13 +12,20 @@ $archs = @("amd64", "386")
 # umpan balik ke user memakai dialog (MessageBox); log tetap ke file.
 $ldflags = "-s -w -H=windowsgui"
 
+# Info build ditanam ke internal/version supaya bisa dicek dari halaman
+# /version — berguna memastikan rebuild benar-benar mengambil kode terbaru.
+$gitCommit = (git rev-parse --short HEAD 2>$null)
+if (-not $gitCommit) { $gitCommit = "unknown" }
+$buildTime = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
+$serverLdflags = "$ldflags -X remote_pc/internal/version.GitCommit=$gitCommit -X remote_pc/internal/version.BuildTime=$buildTime"
+
 foreach ($arch in $archs) {
     $env:GOOS = "windows"
     $env:GOARCH = $arch
     $env:CGO_ENABLED = "0"
 
     Write-Host "==> build server ($arch)"
-    go build -ldflags $ldflags -o "bin/server-$arch.exe" ./cmd/server
+    go build -ldflags $serverLdflags -o "bin/server-$arch.exe" ./cmd/server
     if ($LASTEXITCODE -ne 0) { throw "build server $arch gagal" }
 
     Write-Host "==> build agent ($arch)"

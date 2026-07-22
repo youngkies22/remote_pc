@@ -29,6 +29,15 @@ docker compose -f docker/docker-compose.yml up -d --build
 
 Lihat log: `docker logs -f remote-pc-server`. Stop: `docker compose -f docker/docker-compose.yml down`.
 
+**Cek deployment berhasil update:** buka `http://IP-HOST:9000/version` — bandingkan
+"Waktu Build" dengan waktu Anda menjalankan `--build`. Kalau mau commit hash
+Git juga ikut tampil (opsional, defaultnya "unknown" karena `.git` sengaja
+tidak ikut ke context Docker):
+
+```sh
+GIT_COMMIT=$(git rev-parse --short HEAD) docker compose -f docker/docker-compose.yml up -d --build
+```
+
 ## Opsi 2 — Binary Linux langsung (tanpa Docker)
 
 ```sh

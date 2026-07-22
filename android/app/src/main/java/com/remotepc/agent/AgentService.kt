@@ -87,7 +87,7 @@ class AgentService : Service() {
                 return START_STICKY
             }
         }
-        startForegroundWithType(buildStatusNotification(ConnState.CONNECTING))
+        startForegroundDataSync(buildStatusNotification(ConnState.CONNECTING))
         if (supervisorJob?.isActive != true) {
             state.value = ConnState.CONNECTING
             supervisorJob = scope.launch { connectionLoop() }
@@ -107,14 +107,36 @@ class AgentService : Service() {
 
     override fun onBind(intent: Intent?): IBinder? = null
 
-    private fun startForegroundWithType(notification: Notification) {
+    /**
+     * Foreground service tipe "dataSync" saja dipakai sejak koneksi awal —
+     * ini aman & tak butuh syarat apa pun. Tipe "mediaProjection" BARU
+     * ditambahkan (lewat [promoteForegroundForProjection]) tepat sesudah izin
+     * MediaProjection didapat, karena Android 14+ mewajibkan consent sudah ada
+     * SEBELUM service boleh berjalan sebagai foreground type mediaProjection —
+     * mendeklarasikannya sejak awal (sebelum ada consent) melempar exception
+     * yang bisa meng-crash service ini sebelum sempat connect ke server sama
+     * sekali.
+     */
+    private fun startForegroundDataSync(notification: Notification) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            startForeground(
-                NOTIF_ID, notification,
-                ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC or ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION
-            )
+            startForeground(NOTIF_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
         } else {
             startForeground(NOTIF_ID, notification)
+        }
+    }
+
+    /** Dipanggil hanya setelah user menyetujui dialog sistem MediaProjection. */
+    private fun promoteForegroundForProjection(): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return true
+        return try {
+            startForeground(
+                NOTIF_ID, buildStatusNotification(state.value),
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC or ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION
+            )
+            true
+        } catch (e: Exception) {
+            Log.w(TAG, "gagal promote foreground service ke mediaProjection: ${e.message}")
+            false
         }
     }
 
@@ -316,6 +338,7 @@ class AgentService : Service() {
             intent.getParcelableExtra(EXTRA_RESULT_DATA)
         }
         if (resultCode != Activity.RESULT_OK || data == null) return
+        if (!promoteForegroundForProjection()) return
         val mgr = getSystemService(MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
         val projection = mgr.getMediaProjection(resultCode, data) ?: return
         mediaProjection = projection

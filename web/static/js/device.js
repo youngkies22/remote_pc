@@ -12,6 +12,8 @@ let osRestrictionsApplied = false;
 // scope monitor-only. Disembunyikan supaya guru tidak klik tombol/tab yang
 // diam-diam tidak berefek.
 function applyOsRestrictions(os) {
+  const btnBack = document.getElementById("btn-back");
+  if (btnBack) btnBack.onclick = () => location.href = os === "Android" ? "/hp" : "/";
   if (os !== "Android") return;
   ["files", "terminal", "processes", "services", "sysinfo"].forEach((name) => {
     const tabEl = document.querySelector(`#tabs .tab[data-tab="${name}"]`);

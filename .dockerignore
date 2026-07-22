@@ -8,3 +8,8 @@ uploads
 downloads
 config.yaml
 config/config.yaml
+# Modul Kotlin/Gradle (Android) & Go 1.20 terpisah (win7) — tak dipakai build
+# server, ikut ter-copy ke context Docker kalau tak dikecualikan (android/
+# saja bisa puluhan MB krn build output + gradle cache).
+android
+win7

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Versi Server — Remote PC</title>
+  <link rel="stylesheet" href="/static/css/app.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="brand">Remote<span>PC</span> · Versi Server</div>
+    <div class="actions">
+      <button class="btn" onclick="location.href='/'">🖥️ Dashboard PC</button>
+      <button class="btn" onclick="location.href='/hp'">📱 HP Siswa</button>
+      <span id="whoami" class="muted"></span>
+      <button class="btn" onclick="logout()">Keluar</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="panel">
+      <div class="panel-header"><span>Info Build Server yang Sedang Berjalan</span></div>
+      <div id="version-body" class="kv">
+        <div class="k">Memuat…</div><div></div>
+      </div>
+    </div>
+    <p class="muted" style="font-size:0.8rem;margin-top:1rem">
+      Gunakan halaman ini untuk memastikan deployment (mis. setelah
+      <code>docker compose up -d --build</code> atau rebuild <code>server.exe</code>)
+      benar-benar memakai kode terbaru — bandingkan <strong>Waktu Build</strong>
+      dengan waktu Anda melakukan rebuild.
+    </p>
+  </div>
+
+  <script src="/static/js/common.js"></script>
+  <script src="/static/js/version.js"></script>
+</body>
+</html>

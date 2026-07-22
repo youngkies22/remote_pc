@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HP Siswa — Remote PC</title>
+  <link rel="stylesheet" href="/static/css/app.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="brand">Remote<span>PC</span> · HP Siswa (Android)</div>
+    <div class="actions">
+      <button class="btn" onclick="location.href='/'">🖥️ Dashboard PC</button>
+      <button class="btn" onclick="location.href='/version'">ℹ️ Versi</button>
+      <span id="whoami" class="muted"></span>
+      <button class="btn" onclick="logout()">Keluar</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="cards">
+      <div class="card"><div class="label">Total HP</div><div class="value" id="stat-total">0</div></div>
+      <div class="card"><div class="label">Online</div><div class="value online" id="stat-online">0</div></div>
+      <div class="card"><div class="label">Offline</div><div class="value offline" id="stat-offline">0</div></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <span>Perangkat HP (BYOD — monitor-only)</span>
+        <span class="actions">
+          <button class="btn" onclick="messageAllHp()" title="Kirim pesan ke semua HP online">💬 Pesan Semua</button>
+          <span class="muted" id="refresh-note" style="font-size:0.8rem">memuat…</span>
+        </span>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Nama Perangkat</th><th>Model HP</th><th>IP</th><th>Versi Android</th>
+              <th>Baterai</th><th>RAM</th><th>Status</th><th>Terakhir</th><th class="text-end">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="device-rows">
+            <tr><td colspan="9" class="soon">Belum ada HP.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <p class="muted" style="font-size:0.8rem;margin-top:1rem">
+      HP siswa (BYOD) sengaja dipisah dari dashboard PC dan hanya mendukung
+      pemantauan + kirim pesan + Live Screen (siswa wajib izinkan tiap sesi) —
+      tanpa kontrol jarak jauh, File Explorer, Terminal, atau Shutdown/Restart.
+    </p>
+  </div>
+
+  <script src="/static/js/common.js"></script>
+  <script src="/static/js/dashboard-hp.js"></script>
+</body>
+</html>

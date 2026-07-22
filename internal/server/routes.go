@@ -24,6 +24,8 @@ func registerRoutes(mux *http.ServeMux, a *api.API, wsh *ws.Handler, mw *auth.Mi
 	mux.HandleFunc("GET /login", pageHandler("templates/login.html"))
 	mux.Handle("GET /{$}", mw.Page(pageHandlerFunc("templates/dashboard.html")))
 	mux.Handle("GET /device/{id}", mw.Page(pageHandlerFunc("templates/device.html")))
+	mux.Handle("GET /hp", mw.Page(pageHandlerFunc("templates/devices_android.html")))
+	mux.Handle("GET /version", mw.Page(pageHandlerFunc("templates/version.html")))
 
 	// REST API publik.
 	mux.HandleFunc("POST /api/login", a.Login)
@@ -35,6 +37,7 @@ func registerRoutes(mux *http.ServeMux, a *api.API, wsh *ws.Handler, mw *auth.Mi
 	post("/api/logout", a.Logout)
 	get("/api/me", a.Me)
 	get("/api/stats", a.Stats)
+	get("/api/version", a.Version)
 	get("/api/devices", a.ListDevices)
 	get("/api/devices/{id}", a.GetDevice)
 	mux.Handle("DELETE /api/devices/{id}", mw.API(http.HandlerFunc(a.DeleteDevice)))

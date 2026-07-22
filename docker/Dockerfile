@@ -11,8 +11,16 @@ WORKDIR /src
 COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
-    go build -ldflags "-s -w" -o /out/server ./cmd/server
+# GIT_COMMIT opsional: .git tidak ikut ke context (lihat .dockerignore), jadi
+# commit hash tak bisa dibaca otomatis di dalam container. Isi manual kalau
+# mau, mis: docker compose build --build-arg GIT_COMMIT=$(git rev-parse --short HEAD)
+# BuildTime SELALU terisi otomatis (waktu image ini dibangun) — cukup untuk
+# memastikan rebuild memang mengambil kode terbaru, cek di halaman /version.
+ARG GIT_COMMIT=unknown
+RUN BUILD_TIME=$(date -u +%Y-%m-%dT%H:%M:%SZ) && \
+    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
+    go build -ldflags "-s -w -X remote_pc/internal/version.GitCommit=${GIT_COMMIT} -X remote_pc/internal/version.BuildTime=${BUILD_TIME}" \
+    -o /out/server ./cmd/server
 
 FROM alpine:3.20
 RUN apk add --no-cache su-exec && adduser -D -u 1000 remotepc
