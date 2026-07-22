@@ -4,10 +4,12 @@ services:
       context: ..
       dockerfile: docker/Dockerfile
       args:
-        # Opsional: export GIT_COMMIT=$(git rev-parse --short HEAD) sebelum
-        # `docker compose build` kalau mau commit hash ikut tampil di
-        # halaman /version. Tanpa ini tetap "unknown" — build time tetap
+        # Opsional: export APP_VERSION=v$(git rev-list --count HEAD) dan
+        # GIT_COMMIT=$(git rev-parse --short HEAD) sebelum `docker compose
+        # build` kalau mau nomor versi & commit hash ikut tampil di halaman
+        # /version. Tanpa ini default "dev"/"unknown" — build time tetap
         # otomatis terisi & cukup untuk memastikan rebuild berhasil.
+        APP_VERSION: ${APP_VERSION:-dev}
         GIT_COMMIT: ${GIT_COMMIT:-unknown}
     image: remote-pc-server:latest
     container_name: remote-pc-server

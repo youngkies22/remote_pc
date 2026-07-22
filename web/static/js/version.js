@@ -17,8 +17,9 @@ async function loadVersion() {
   try {
     const v = await api("/api/version");
     body.innerHTML = [
-      kvRow("Git Commit", v.git_commit || "unknown"),
+      kvRow("Versi Aplikasi", v.app_version || "dev"),
       kvRow("Waktu Build", fmtBuildTime(v.build_time)),
+      kvRow("Git Commit", v.git_commit || "unknown"),
       kvRow("Versi Go", v.go_version || "-"),
     ].join("");
   } catch (err) {

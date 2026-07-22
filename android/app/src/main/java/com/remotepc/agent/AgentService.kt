@@ -296,7 +296,12 @@ class AgentService : Service() {
     // ================= Tahap A4: Live Screen =================
 
     private fun onScreenStart() {
-        if (mediaProjection != null) {
+        val projection = mediaProjection
+        if (projection != null) {
+            // Izin MediaProjection masih berlaku (belum di-stop total) — tinggal
+            // buat ulang VirtualDisplay/ImageReader kalau sempat dilepas saat
+            // screen.stop sebelumnya, TANPA minta izin sistem lagi.
+            if (virtualDisplay == null) setupVirtualDisplay(projection)
             beginScreenCapture()
             return
         }
@@ -314,9 +319,18 @@ class AgentService : Service() {
         )
     }
 
+    // screen.stop cuma menghentikan CAPTURE (VirtualDisplay/ImageReader) — token
+    // MediaProjection SENGAJA dibiarkan hidup supaya screen.start berikutnya
+    // (pindah dari grid /hp/live ke tampilan individual, balik lagi, dst) tak
+    // perlu minta izin sistem berulang-ulang. Token baru benar-benar dilepas di
+    // onDestroy() (service berhenti) atau bila sistem sendiri yang mencabutnya
+    // (MediaProjection.Callback.onStop di bawah).
     private fun onScreenStop() {
         stopScreenCapture()
-        teardownProjection()
+        virtualDisplay?.release()
+        virtualDisplay = null
+        imageReader?.close()
+        imageReader = null
     }
 
     private fun onScreenQuality(env: Envelope) {

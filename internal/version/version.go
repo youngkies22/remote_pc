@@ -5,6 +5,10 @@
 package version
 
 var (
-	GitCommit = "unknown"
-	BuildTime = "unknown"
+	// AppVersion = "v" + jumlah commit git ("git rev-list --count HEAD") saat
+	// build — nomor urut yang naik otomatis tiap ada perubahan, tanpa perlu
+	// di-bump manual. Ini yang ditampilkan sbg "Versi Aplikasi" di /version.
+	AppVersion = "dev"
+	GitCommit  = "unknown"
+	BuildTime  = "unknown"
 )

@@ -14,10 +14,14 @@ $ldflags = "-s -w -H=windowsgui"
 
 # Info build ditanam ke internal/version supaya bisa dicek dari halaman
 # /version — berguna memastikan rebuild benar-benar mengambil kode terbaru.
+# AppVersion = "v" + jumlah commit git: nomor urut yang naik otomatis tiap ada
+# perubahan, tanpa perlu di-bump manual (biar selalu akurat & tak pernah lupa).
+$commitCount = (git rev-list --count HEAD 2>$null)
+$appVersion = if ($commitCount) { "v$commitCount" } else { "dev" }
 $gitCommit = (git rev-parse --short HEAD 2>$null)
 if (-not $gitCommit) { $gitCommit = "unknown" }
 $buildTime = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
-$serverLdflags = "$ldflags -X remote_pc/internal/version.GitCommit=$gitCommit -X remote_pc/internal/version.BuildTime=$buildTime"
+$serverLdflags = "$ldflags -X remote_pc/internal/version.AppVersion=$appVersion -X remote_pc/internal/version.GitCommit=$gitCommit -X remote_pc/internal/version.BuildTime=$buildTime"
 
 foreach ($arch in $archs) {
     $env:GOOS = "windows"
